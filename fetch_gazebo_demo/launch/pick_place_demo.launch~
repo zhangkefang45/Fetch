@@ -11,6 +11,6 @@
   </node>
 
   <!-- Drive to the table, pick stuff up -->
-  <node name="demo" pkg="fetch_gazebo_demo" type="pick_place_demo.py" output="screen" />
+  
 
 </launch>

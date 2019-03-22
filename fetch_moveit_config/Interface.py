@@ -1,44 +1,18 @@
 #!/usr/bin/env python
-
-# Copyright (c) 2015, Fetch Robotics Inc.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of the Fetch Robotics Inc. nor the names of its
-#       contributors may be used to endorse or promote products derived from
-#       this software without specific prior written permission.
-# 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL FETCH ROBOTICS INC. BE LIABLE FOR ANY
-# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# Author: Michael Ferguson
-# Author: Di Sun
-
-import copy
+# -*- coding: utf-8 -*-
 import actionlib
-import rospy
-
-from math import sin, cos
+import copy
+import rospy, sys
+import moveit_commander
+import control_msgs.msg
+from moveit_msgs.msg import RobotTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
 from moveit_python import (MoveGroupInterface,
                            PlanningSceneInterface,
                            PickPlaceInterface)
+from geometry_msgs.msg import PoseStamped, Pose
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from moveit_python.geometry import rotate_pose_msg_by_euler_angles
-
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 from control_msgs.msg import PointHeadAction, PointHeadGoal
 from grasping_msgs.msg import FindGraspableObjectsAction, FindGraspableObjectsGoal
@@ -47,58 +21,12 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
+# 超参数
+CLOSED_POS = 0.0  # The position for a fully-closed gripper (meters).
+OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
+ACTION_SERVER = 'gripper_controller/gripper_action'
 
 
-
-# Move base using navigation stack
-class MoveBaseClient(object):
-
-    def __init__(self):
-        self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-        rospy.loginfo("Waiting for move_base...")
-        self.client.wait_for_server()
-
-    def goto(self, x, y, theta, frame="map"):
-        move_goal = MoveBaseGoal()
-        move_goal.target_pose.pose.position.x = x
-        move_goal.target_pose.pose.position.y = y
-        move_goal.target_pose.pose.orientation.z = sin(theta/2.0)
-        move_goal.target_pose.pose.orientation.w = cos(theta/2.0)
-        move_goal.target_pose.header.frame_id = frame
-        move_goal.target_pose.header.stamp = rospy.Time.now()
-
-        # TODO wait for things to work
-        self.client.send_goal(move_goal)
-        self.client.wait_for_result()
-
-# Send a trajectory to controller
-class FollowTrajectoryClient(object):
-
-    def __init__(self, name, joint_names):
-        self.client = actionlib.SimpleActionClient("%s/follow_joint_trajectory" % name,
-                                                   FollowJointTrajectoryAction)
-        rospy.loginfo("Waiting for %s..." % name)
-        self.client.wait_for_server()
-        self.joint_names = joint_names
-
-    def move_to(self, positions, duration=5.0):
-        if len(self.joint_names) != len(positions):
-            print("Invalid trajectory position")
-            return False
-        trajectory = JointTrajectory()
-        trajectory.joint_names = self.joint_names
-        trajectory.points.append(JointTrajectoryPoint())
-        trajectory.points[0].positions = positions
-        trajectory.points[0].velocities = [0.0 for _ in positions]
-        trajectory.points[0].accelerations = [0.0 for _ in positions]
-        trajectory.points[0].time_from_start = rospy.Duration(duration)
-        follow_goal = FollowJointTrajectoryGoal()
-        follow_goal.trajectory = trajectory
-
-        self.client.send_goal(follow_goal)
-        self.client.wait_for_result()
-
-# Point the head using controller
 class PointHeadClient(object):
 
     def __init__(self):
@@ -117,7 +45,7 @@ class PointHeadClient(object):
         self.client.send_goal(goal)
         self.client.wait_for_result()
 
-# Tools for grasping
+
 class GraspingClient(object):
 
     def __init__(self):
@@ -275,98 +203,109 @@ class GraspingClient(object):
             if result.error_code.val == MoveItErrorCodes.SUCCESS:
                 return
 
-if __name__ == "__main__":
-    # Create a node
-    rospy.init_node("demo")
 
-    # Make sure sim time is working
-    while not rospy.Time.now():
-        pass
+class MoveItIkDemo(object):
+    MIN_EFFORT = 35  # Min grasp force, in Newtons
+    MAX_EFFORT = 100  # Max grasp force, in Newtons
 
-    # Setup clients
-    #move_base = MoveBaseClient()
-    #torso_action = FollowTrajectoryClient("torso_controller", ["torso_lift_joint"])
-    head_action = PointHeadClient()
-    grasping_client = GraspingClient()
-
-    # Move the base to be in front of the table
-    # Demonstrates the use of the navigation stack
-    #rospy.loginfo("Moving to table...")
-    #move_base.goto(2.250, 3.118, 0.0)
-    #move_base.goto(2.750, 3.118, 0.0)
-
-    # Raise the torso using just a controller
-    #rospy.loginfo("Raising torso...")
-    #torso_action.move_to([0.4, ])
-
-    # Point the head at the cube we want to pick
-    # head_action.look_at(3.7, 3.18, 0.0, "map")
-    cube_in_grapper = False
-    grasping_client.stow()
-
-    while not rospy.is_shutdown():
+    def __init__(self):
+        # 初始化move_group的API
+        moveit_commander.roscpp_initialize(sys.argv)
+        # 初始化ROS节点
+        rospy.init_node('moveit_demo')
+        # 初始化需要使用move group控制的机械臂中的arm group
+        arm = moveit_commander.MoveGroupCommander('arm')
+        self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
+        self._client.wait_for_server(rospy.Duration(10))
+        # 获取终端link的名称
+        # 获取场景中的物体
+        head_action = PointHeadClient()
+        grasping_client = GraspingClient()
+        # 向下看
         head_action.look_at(1.2, 0.0, 0.0, "base_link")
-
-        # Get block to pick
-        fail_ct = 0
-        while not rospy.is_shutdown() and not cube_in_grapper:
-            rospy.loginfo("Picking object...")
-            grasping_client.updateScene()
-            cube, grasps = grasping_client.getGraspableObject()
-            if cube == None:
-                rospy.logwarn("Perception failed.")
-                # grasping_client.intermediate_stow()
-                grasping_client.stow()
-                head_action.look_at(1.2, 0.0, 0.0, "base_link")
-                continue
-
-            # Pick the block
-            if grasping_client.pick(cube, grasps):
-                cube_in_grapper = True
-                break
-            rospy.logwarn("Grasping failed.")
-            grasping_client.stow()
-            if fail_ct > 15:
-                fail_ct = 0
-                break
-            fail_ct += 1
-
-        # Tuck the arm
-        #grasping_client.tuck()
-
-        # Lower torso
-        #rospy.loginfo("Lowering torso...")
-        #torso_action.move_to([0.0, ])
-
-        # Move to second table
-        #rospy.loginfo("Moving to second table...")
-        #move_base.goto(-3.53, 3.75, 1.57)
-        #move_base.goto(-3.53, 4.15, 1.57)
-
-        # Raise the torso using just a controller
-        #rospy.loginfo("Raising torso...")
-        #torso_action.move_to([0.4, ])
-
-        # Place the block
-        while not rospy.is_shutdown() and cube_in_grapper:
-            rospy.loginfo("Placing object...")
-            pose = PoseStamped()
-            pose.pose = cube.primitive_poses[0]
-            pose.pose.position.y *= -1.0
-            pose.pose.position.z += 0.02
-            pose.header.frame_id = cube.header.frame_id
-            if grasping_client.place(cube, pose):
-                cube_in_grapper = False
-                break
-            rospy.logwarn("Placing failed.")
-            grasping_client.intermediate_stow()
-            grasping_client.stow()
-            if fail_ct > 15:
-                fail_ct = 0
-                break
-            fail_ct += 1
-        # Tuck the arm, lower the torso
-        grasping_client.intermediate_stow()
         grasping_client.stow()
-        rospy.loginfo("Finished")
-        #torso_action.move_to([0.0, ])
+        grasping_client.updateScene()
+        rospy.sleep(5)
+        # 设置目标位置所使用的参考坐标系
+        reference_frame = 'base_link'
+        arm.set_pose_reference_frame(reference_frame)
+
+        # 当运动规划失败后，允许重新规划
+        arm.allow_replanning(True)
+
+        # 设置位置(单位：米)和姿态（单位：弧度）的允许误差
+        arm.set_goal_position_tolerance(0.01)
+        arm.set_goal_orientation_tolerance(0.05)
+
+        # # 设置机械臂工作空间中的目标位姿，位置使用x、y、z坐标描述，
+        # # 姿态使用四元数描述，基于base_link坐标系
+        # target_pose = PoseStamped()
+        # target_pose.header.frame_id = reference_frame
+        # target_pose.header.stamp = rospy.Time.now()
+        # target_pose.pose.position.x = 0.58
+        # target_pose.pose.position.y = 0.2
+        # target_pose.pose.position.z = 0.75
+        # target_pose.pose.orientation.x = 0
+        # target_pose.pose.orientation.y = 0
+        # target_pose.pose.orientation.z = 0
+        # target_pose.pose.orientation.w = 0
+        #
+        # # 设置机器臂当前的状态作为运动初始状态
+        # arm.set_start_state_to_current_state()
+        #
+        # # 设置机械臂终端运动的目标位姿
+        # arm.set_pose_target(target_pose, end_effector_link)
+        #
+        # # 规划运动路径
+        # traj = arm.plan()
+        #
+        # # 按照规划的运动路径控制机械臂运动
+        # arm.execute(traj)
+        # rospy.sleep(2)
+        #
+        # # 控制机械臂终端向右移动5cm
+        # # arm.shift_pose_target(1, -0.05, end_effector_link)
+        # # arm.go()
+        # # rospy.sleep(1)
+        # #
+        # # # 控制机械臂终端反向旋转90度
+        # # arm.shift_pose_target(3, -1.57, end_effector_link)
+        # # arm.go()
+        # # rospy.sleep(1)
+        # #
+        # # # 控制机械臂回到初始化位置
+        # # arm.set_named_target('home')
+        # # arm.go()
+        #
+        # # 关闭并退出moveit
+        # moveit_commander.roscpp_shutdown()
+        # moveit_commander.os._exit(0)
+
+    def open(self):
+        """Opens the gripper.
+        """
+        goal = control_msgs.msg.GripperCommandGoal()
+        goal.command.position = OPENED_POS
+        self._client.send_goal_and_wait(goal, rospy.Duration(10))
+
+    def close(self, width=0.0, max_effort=MAX_EFFORT):
+        """Closes the gripper.
+
+        Args:
+            width: The target gripper width, in meters. (Might need to tune to
+                make sure the gripper won't damage itself or whatever it's
+                gripping.)
+            max_effort: The maximum effort, in Newtons, to use. Note that this
+                should not be less than 35N, or else the gripper may not close.
+        """
+        assert CLOSED_POS <= width <= OPENED_POS
+        goal = control_msgs.msg.GripperCommandGoal()
+        goal.command.position = width
+        goal.command.max_effort = max_effort
+        self._client.send_goal_and_wait(goal, rospy.Duration(10))
+
+
+if __name__ == "__main__":
+    MoveItIkDemo()
+
+

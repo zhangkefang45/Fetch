@@ -10,8 +10,6 @@
   <arg name="debug" default="false"/>
 
   <include file="$(find fetch_gazebo)/launch/pickplace_playground.launch">
-    <arg name="paused" default="$(arg paused)"/>
-    <arg name="use_sim_time" default="$(arg use_sim_time)"/>
     <arg name="gui" default="$(arg gui)"/>
     <arg name="headless" default="$(arg headless)"/>
     <arg name="debug" default="$(arg debug)"/>

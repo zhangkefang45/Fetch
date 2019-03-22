@@ -17,4 +17,5 @@
 
   <include file="$(find fetch_moveit_config)/launch/fetch_moveit_planning_execution.launch"/>
 
+  <include file="$(find fetch_gazebo_demo)/launch/pick_place_demo.launch"/>
 </launch>
