@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- note: controllers.yaml in moveit_config has to be setup for specific controller -->
+<!--starts the gazebo simulation-->
+<launch>
+  <arg name="limited" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <include file="$(find fetch_gazebo)/launch/pickplace_playground.launch">
+    <arg name="gui" default="$(arg gui)"/>
+    <arg name="headless" default="$(arg headless)"/>
+    <arg name="debug" default="$(arg debug)"/>
+  </include>
+
+  <include file="$(find fetch_moveit_config)/launch/fetch_moveit_planning_execution.launch"/>
+
+</launch>
