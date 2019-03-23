@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import actionlib
+import math
 import copy
 import rospy, sys
 import moveit_commander
@@ -215,15 +216,18 @@ class MoveItIkDemo(object):
         rospy.init_node('moveit_demo')
         # 初始化需要使用move group控制的机械臂中的arm group
         arm = moveit_commander.MoveGroupCommander('arm')
+        gripper = moveit_commander.MoveGroupCommander('gripper')
         self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
         self._client.wait_for_server(rospy.Duration(10))
         # 获取终端link的名称
+        end_effector_link = arm.get_end_effector_link()
         # 获取场景中的物体
         head_action = PointHeadClient()
         grasping_client = GraspingClient()
         # 向下看
         head_action.look_at(1.2, 0.0, 0.0, "base_link")
         grasping_client.stow()
+        self.open()
         grasping_client.updateScene()
         rospy.sleep(5)
         # 设置目标位置所使用的参考坐标系
@@ -239,29 +243,40 @@ class MoveItIkDemo(object):
 
         # # 设置机械臂工作空间中的目标位姿，位置使用x、y、z坐标描述，
         # # 姿态使用四元数描述，基于base_link坐标系
-        # target_pose = PoseStamped()
-        # target_pose.header.frame_id = reference_frame
-        # target_pose.header.stamp = rospy.Time.now()
-        # target_pose.pose.position.x = 0.58
-        # target_pose.pose.position.y = 0.2
-        # target_pose.pose.position.z = 0.75
-        # target_pose.pose.orientation.x = 0
-        # target_pose.pose.orientation.y = 0
-        # target_pose.pose.orientation.z = 0
-        # target_pose.pose.orientation.w = 0
-        #
-        # # 设置机器臂当前的状态作为运动初始状态
-        # arm.set_start_state_to_current_state()
-        #
-        # # 设置机械臂终端运动的目标位姿
-        # arm.set_pose_target(target_pose, end_effector_link)
-        #
-        # # 规划运动路径
-        # traj = arm.plan()
-        #
-        # # 按照规划的运动路径控制机械臂运动
-        # arm.execute(traj)
-        # rospy.sleep(2)
+        target_pose = PoseStamped()
+        target_pose.header.frame_id = reference_frame
+        target_pose.header.stamp = rospy.Time.now()
+        target_pose.pose.position.x = 0.6
+        target_pose.pose.position.y = 0.2
+        target_pose.pose.position.z = 0.75
+        target_pose.pose.orientation.x = 0
+        target_pose.pose.orientation.y = 0
+        target_pose.pose.orientation.z = 0
+        target_pose.pose.orientation.w = 0
+
+        # 设置机器臂当前的状态作为运动初始状态
+        arm.set_start_state_to_current_state()
+
+        # 设置机械臂终端运动的目标位姿
+        arm.set_pose_target(target_pose, end_effector_link)
+
+        # 规划运动路径
+        traj = arm.plan()
+
+        # 按照规划的运动路径控制机械臂运动
+        arm.execute(traj)
+        rospy.sleep(2)
+
+        l = gripper.get_current_pose("l_gripper_finger_link").pose.position
+        r = gripper.get_current_pose("r_gripper_finger_link").pose.position
+        print(math.sqrt(pow(l.x-r.x, 2)+pow(l.y-r.y, 2)+pow(l.z-r.z,2)))
+        self.close()
+        rospy.sleep(2)
+        l = gripper.get_current_pose("l_gripper_finger_link").pose.position
+        r = gripper.get_current_pose("r_gripper_finger_link").pose.position
+        print(math.sqrt(pow(l.x-r.x, 2)+pow(l.y-r.y, 2)+pow(l.z-r.z,2)))
+
+        grasping_client.stow()
         #
         # # 控制机械臂终端向右移动5cm
         # # arm.shift_pose_target(1, -0.05, end_effector_link)
