@@ -85,12 +85,12 @@ class RGBD(object):
 if __name__ == '__main__':
     rospy.init_node('take_photo')
     rgb = RGBD()
-    i=101
+    i=1
     while i <= 150:
-        img = rgb.read_color_data()
+        img = rgb.read_depth_data()
         if img is None:
             continue
-        cv2.imwrite("image/"+str(i)+".png", img)
+        cv2.imwrite("images/"+str(i)+".png", img)
+
         print i
-        time.sleep(8)
         i=i+1

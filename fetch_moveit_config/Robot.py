@@ -8,6 +8,7 @@ import rospy, sys
 import moveit_commander
 import control_msgs.msg
 import numpy as np
+from Interface import CubesManager
 from moveit_msgs.msg import RobotTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 from moveit_python import (MoveGroupInterface,
@@ -29,7 +30,6 @@ from camera import RGBD
 CLOSED_POS = 0.0  # The position for a fully-closed gripper (meters).
 OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
 ACTION_SERVER = 'gripper_controller/gripper_action'
-Box_position = [0.6, 0.2, 0.7]
 
 class PointHeadClient(object):
 
@@ -211,7 +211,7 @@ class GraspingClient(object):
 class Robot(object):
     MIN_EFFORT = 35  # Min grasp force, in Newtons
     MAX_EFFORT = 100  # Max grasp force, in Newtons
-    dt = 0.1  # 转动的速度和 dt 有关
+    dt = 0.2  # 转动的速度和 dt 有关
     action_bound = [-1, 1]  # 转动的角度范围
     state_dim = 7  # 六个观测值
     action_dim = 7  # 六个动作
@@ -219,33 +219,37 @@ class Robot(object):
     def __init__(self):
         # 初始化move_group的API
         moveit_commander.roscpp_initialize(sys.argv)
+
         # 初始化ROS节点
         rospy.init_node('moveit_demo')
+
         # 初始化需要使用move group控制的机械臂中的arm group
         self.arm = moveit_commander.MoveGroupCommander('arm')
         self.gripper = moveit_commander.MoveGroupCommander('gripper')
         self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
         self._client.wait_for_server(rospy.Duration(10))
         self.camera = RGBD()
+        self.Box_position = [0.6, 0.2, 0.7]
+        # 物块管理模块
+        self.cube_manager = CubesManager()
         # 获取终端link的名称
         self.end_effector_link = self.arm.get_end_effector_link()
         # 获取场景中的物体
-        head_action = PointHeadClient()
-        grasping_client = GraspingClient()
+        self.head_action = PointHeadClient()
+        self.grasping_client = GraspingClient()
         # 向下看
-        head_action.look_at(1.2, 0.0, 0.0, "base_link")
+        self.head_action.look_at(1.2, 0.0, 0.0, "base_link")
         # 初始化机器人手臂位置
-        self.arm_goal=[0, 0, 0, 0, 0, 0, 0]
+        self.arm_goal=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.reset()
         # 初始化reward
         now_position = self.gripper.get_current_pose("gripper_link").pose.position
-        now_dis = math.sqrt(math.pow(now_position.x - Box_position[0], 2)
-                              + math.pow(now_position.y - Box_position[1], 2)
-                              + math.pow(now_position.z - Box_position[2], 2))
+        now_dis = math.sqrt(math.pow(now_position.x - self.Box_position[0], 2)
+                              + math.pow(now_position.y - self.Box_position[1], 2)
+                              + math.pow(now_position.z - self.Box_position[2], 2))
         self.reward = math.exp(-now_dis)
         # 更新场景到rviz中
-        grasping_client.updateScene()
-        rospy.sleep(5)
+
         # 设置目标位置所使用的参考坐标系
         reference_frame = 'base_link'
         self.arm.set_pose_reference_frame(reference_frame)
@@ -282,26 +286,40 @@ class Robot(object):
 
     def step(self, action):
         done = False
-        reward = 0
-        action = np.clip(action, self.action_bound)
+        action = np.clip(action, *self.action_bound)
+        state = None
+        print(self.arm_goal)
+        print(action)
         # 转动一定的角度(执行动作)
-        self.arm_goal + action*self.dt
-        self.arm_goal %= 2*np.pi
-        self.arm.set_joint_value_target(self.arm_goal)
+        self.arm_goal += action*self.dt
+        for x in self.arm_goal:
+            x %= np.pi*2
+
+        try:
+            self.arm.set_joint_value_target(self.arm_goal)
+        except:
+            done = True
         success = self.arm.go()
+        print(success)
         rospy.sleep(1)
-        if success == False:    # 规划失败，发生碰撞
+        if not success:    # 规划失败，发生碰撞
             reward = -1
             done = True
         else:                   # 规划成功，开始运动
             # 计算距离物块的距离，来返回reawrd
             af_position = self.gripper.get_current_pose("gripper_link").pose.position
-            af_dis = math.sqrt(math.pow(af_position.x - Box_position[0], 2)
-                                + math.pow(af_position.y - Box_position[1], 2)
-                                + math.pow(af_position.z - Box_position[2], 2))
-            self.reward = math.exp(-af_dis) - self.reward
+            af_dis = math.sqrt(math.pow(af_position.x - self.Box_position[0], 2)
+                                + math.pow(af_position.y - self.Box_position[1], 2)
+                                + math.pow(af_position.z - self.Box_position[2], 2))
+            reward = math.exp(-af_dis) - self.reward
+            self.reward = math.exp(-af_dis)
             # 获取深度摄像头信息
-            s = self.camera.read_point_cloud()
+            rgb = self.camera.read_color_data()
+            dep = self.camera.read_depth_data()
+            rgb = np.array(rgb)
+            dep = np.array(dep)
+            dep = dep[:, :, np.newaxis]
+            rgbd = np.concatenate((rgb, dep), axis=2)
             # 尝试抓取
             self.close()
             # 抓取成功和碰撞到环境均为结束
@@ -321,20 +339,31 @@ class Robot(object):
                 done = True
             else:
                 self.open()
-        return s, reward, done
+        return state, reward, done
 
         # print(end_x, end_y, end_z)
 
-    # 初始化
+    # 初始化机器人手臂和物块位置以及RViz中的场景
     def reset(self):
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         self.arm.set_joint_value_target(self.arm_goal)
+        self.cube_manager.reset_cube(rand=True)
+        self.Box_position = self.cube_manager.read_cube_pose("cube1")["init"]
+        self.Box_position[0] -= 0.2
+        self.Box_position[2] -= 0.1
         self.arm.go()
         rospy.sleep(1)
+        self.grasping_client.updateScene()
+        rospy.sleep(5)
 
     def sample(self):
-        return np.random.rand(6)-0.5
+        # -0.5 ~ 0.5
+        return np.random.rand(7)-0.5
 
 
 if __name__ == '__main__':
     robot = Robot()
+    while True:
+        s, r, d = robot.step(robot.sample())
+        if d:
+            break

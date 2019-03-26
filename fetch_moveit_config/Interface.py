@@ -6,6 +6,10 @@ import copy
 import rospy, sys
 import moveit_commander
 import control_msgs.msg
+import random
+from gazebo_msgs.msg import  ModelState, ModelStates
+from geometry_msgs.msg import Pose, Quaternion, PoseStamped
+from gazebo_msgs.srv import GetLinkState
 from moveit_msgs.msg import RobotTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 from moveit_python import (MoveGroupInterface,
@@ -320,7 +324,90 @@ class MoveItIkDemo(object):
         self._client.send_goal_and_wait(goal, rospy.Duration(10))
 
 
+class CubesManager(object):
+    CubeMap = {'cube1': {'init': [0.8, 0.1, 0.75]}}
+
+    def __init__(self):
+        """
+        :param cubes_name: a list of string type of all cubes
+        """
+        rospy.init_node('cube_demo')
+        self.cubes_pose = ModelState()
+        self.cubes_state = dict()
+        # pos publisher
+        self.pose_pub = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
+        self.pose_sub = rospy.Subscriber("/gazebo/cubes", ModelStates, callback=self.callback_state, queue_size=1)
+
+    def reset_cube(self, rand=False):
+        if not rand:
+            for k, v in self.CubeMap.items():
+                self.set_cube_pose(k, v['init'])
+        else:
+            for k, v in self.CubeMap.items():
+                pose = [0.8, 0.1, v["init"][2]]
+                pose[0] += - 0.15 + random.random() * 0.3
+                pose[1] += - 0.15 + random.random() * 0.3
+                self.set_cube_pose(k, pose)
+
+    def callback_state(self, data):
+        for idx, cube in enumerate(data.name):
+            self.cubes_state.setdefault(cube, [0] * 3)
+            pose = self.cubes_state[cube]
+            cube_init = self.CubeMap[cube]["init"]
+            pose[0] = data.pose[idx].position.x + cube_init[0]
+            pose[1] = data.pose[idx].position.y + cube_init[1]
+            pose[2] = data.pose[idx].position.z + cube_init[2]
+
+    # def add_cube(self, name):
+    #     p = PoseStamped()
+    #     p.header.frame_id = ros_robot.get_planning_frame()
+    #     p.header.stamp = rospy.Time.now()
+    #
+    #     # p.pose = self._arm.get_random_pose().pose
+    #     p.pose.position.x = -0.18
+    #     p.pose.position.y = 0
+    #     p.pose.position.z = 0.046
+    #
+    #     q = quaternion_from_euler(0.0, 0.0, 0.0)
+    #     p.pose.orientation = Quaternion(*q)
+    #     ros_scene.add_box(name, p, (0.02, 0.02, 0.02))
+    #
+    # def remove_cube(self, name):
+    #     ros_scene.remove_world_object(name)
+
+    def read_cube_pose(self, name=None):
+        if name is not None:
+            return self.cubes_state[name]
+        else:
+            return self.cubes_state
+
+    def set_cube_pose(self, name, pose, orient=None):
+        """
+        :param name: cube name, a string
+        :param pose: cube position, a list of three float, [x, y, z]
+        :param orient: cube orientation, a list of three float, [ix, iy, iz]
+        :return:
+        """
+        self.cubes_pose.model_name = name
+        p = self.cubes_pose.pose
+        cube_init = self.CubeMap[name]["init"]
+        p.position.x = pose[0]
+        p.position.y = pose[1]
+        p.position.z = pose[2]
+        if orient is None:
+            orient = [0, 0, 0]
+        q = quaternion_from_euler(orient[0], orient[1], orient[2])
+        p.orientation = Quaternion(*q)
+        self.pose_pub.publish(self.cubes_pose)
+
+
 if __name__ == "__main__":
-    MoveItIkDemo()
+    test = CubesManager()
+    i = 1
+    while i<10:
+        print(i)
+        test.reset_cube(rand=True)
+        rospy.sleep(1)
+        i+=1
 
 
