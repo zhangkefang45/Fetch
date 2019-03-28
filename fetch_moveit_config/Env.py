@@ -4,11 +4,16 @@
 import actionlib
 import copy
 import math
+import torch
 import rospy, sys
 import moveit_commander
 import control_msgs.msg
+import random
+import cv2
 import numpy as np
-from Interface import CubesManager
+from gazebo_msgs.msg import  ModelState, ModelStates
+from geometry_msgs.msg import Pose, Quaternion, PoseStamped
+from gazebo_msgs.srv import GetLinkState
 from moveit_msgs.msg import RobotTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 from moveit_python import (MoveGroupInterface,
@@ -30,6 +35,7 @@ from camera import RGBD
 CLOSED_POS = 0.0  # The position for a fully-closed gripper (meters).
 OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
 ACTION_SERVER = 'gripper_controller/gripper_action'
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class PointHeadClient(object):
 
@@ -208,13 +214,105 @@ class GraspingClient(object):
                 return
 
 
+class CubesManager(object):
+    CubeMap = {'cube1': {'init': [0.8, 0.1, 0.75]}}
+
+    def __init__(self):
+        """
+        :param cubes_name: a list of string type of all cubes
+        """
+        # rospy.init_node('cube_demo')
+        self.cubes_pose = ModelState()
+        self.cubes_state = dict()
+        # pos publisher
+        self.pose_pub = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
+        self.pose_sub = rospy.Subscriber("/gazebo/cubes", ModelStates, callback=self.callback_state, queue_size=1)
+
+    def reset_cube(self, rand=False):
+        if not rand:
+            for k, v in self.CubeMap.items():
+                self.set_cube_pose(k, v['init'])
+        else:
+            for k, v in self.CubeMap.items():
+                pose = [0.8, 0.1, v["init"][2]]
+                pose[0] += - 0.2 + random.random() * 0.4
+                pose[1] += - 0.2 + random.random() * 0.4
+                self.set_cube_pose(k, pose)
+
+    def callback_state(self, data):
+        for idx, cube in enumerate(data.name):
+            self.cubes_state.setdefault(cube, [0] * 3)
+            pose = self.cubes_state[cube]
+            cube_init = self.CubeMap[cube]["init"]
+            pose[0] = data.pose[idx].position.x + cube_init[0]
+            pose[1] = data.pose[idx].position.y + cube_init[1]
+            pose[2] = data.pose[idx].position.z + cube_init[2]
+
+    # def add_cube(self, name):
+    #     p = PoseStamped()
+    #     p.header.frame_id = ros_robot.get_planning_frame()
+    #     p.header.stamp = rospy.Time.now()
+    #
+    #     # p.pose = self._arm.get_random_pose().pose
+    #     p.pose.position.x = -0.18
+    #     p.pose.position.y = 0
+    #     p.pose.position.z = 0.046
+    #
+    #     q = quaternion_from_euler(0.0, 0.0, 0.0)
+    #     p.pose.orientation = Quaternion(*q)
+    #     ros_scene.add_box(name, p, (0.02, 0.02, 0.02))
+    #
+    # def remove_cube(self, name):
+    #     ros_scene.remove_world_object(name)
+
+    def read_cube_pose(self, name=None):
+        if name is not None:
+            x = self.cubes_pose.pose.position.x
+            y = self.cubes_pose.pose.position.y
+            z = self.cubes_pose.pose.position.z
+            return [x, y, z]
+        else:
+            return None
+
+    def set_cube_pose(self, name, pose, orient=None):
+        """
+        :param name: cube name, a string
+        :param pose: cube position, a list of three float, [x, y, z]
+        :param orient: cube orientation, a list of three float, [ix, iy, iz]
+        :return:
+        """
+        self.cubes_pose.model_name = name
+        p = self.cubes_pose.pose
+        cube_init = self.CubeMap[name]["init"]
+        p.position.x = pose[0]
+        p.position.y = pose[1]
+        p.position.z = pose[2]
+        if orient is None:
+            orient = [0, 0, 0]
+        q = quaternion_from_euler(orient[0], orient[1], orient[2])
+        p.orientation = Quaternion(*q)
+        self.pose_pub.publish(self.cubes_pose)
+
+
+'''
+机器人类：包含了一些对机器人的控制和初始化功能
+函数：
+    open: 控制夹爪的张开（范围0.03～0.13）
+    close(widh, max_effort)：控制夹爪闭合 width:张开距离,
+        max_effort:闭合力度
+    step(action): 读入一组关节角，将机械臂的七个关节转动到相应的角度
+    reset: 重置机械臂和木块到初始状态
+    sample: 随机七个角度(范围-0.5~0.5）
+'''
+
+
 class Robot(object):
     MIN_EFFORT = 35  # Min grasp force, in Newtons
     MAX_EFFORT = 100  # Max grasp force, in Newtons
-    dt = 0.2  # 转动的速度和 dt 有关
+    dt = 0.005  # 转动的速度和 dt 有关
     action_bound = [-1, 1]  # 转动的角度范围
-    state_dim = 7  # 六个观测值
-    action_dim = 7  # 六个动作
+    state_dim = 7  # 7个观测值
+    action_dim = 7  # 7个动作
 
     def __init__(self):
         # 初始化move_group的API
@@ -229,9 +327,7 @@ class Robot(object):
         self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
         self._client.wait_for_server(rospy.Duration(10))
         self.camera = RGBD()
-        self.Box_position = [0.6, 0.2, 0.7]
-        # 物块管理模块
-        self.cube_manager = CubesManager()
+        self.Box_position = [0.6, 0.1, 0.65]
         # 获取终端link的名称
         self.end_effector_link = self.arm.get_end_effector_link()
         # 获取场景中的物体
@@ -286,23 +382,21 @@ class Robot(object):
 
     def step(self, action):
         done = False
-        action = np.clip(action, *self.action_bound)
         state = None
-        print(self.arm_goal)
-        print(action)
-        # 转动一定的角度(执行动作)
-        self.arm_goal += action*self.dt
-        for x in self.arm_goal:
-            x %= np.pi*2
+        success = True
 
+        # 转动一定的角度(执行动作)
+        self.arm_goal = action*self.dt
+        self.arm_goal = np.clip(self.arm_goal, *self.action_bound)
+        print(self.arm_goal)
         try:
             self.arm.set_joint_value_target(self.arm_goal)
+            success = self.arm.go()
+            rospy.sleep(1)
         except:
             done = True
-        success = self.arm.go()
         print(success)
-        rospy.sleep(1)
-        if not success:    # 规划失败，发生碰撞
+        if not success or done:    # 规划失败，发生碰撞
             reward = -1
             done = True
         else:                   # 规划成功，开始运动
@@ -313,13 +407,6 @@ class Robot(object):
                                 + math.pow(af_position.z - self.Box_position[2], 2))
             reward = math.exp(-af_dis) - self.reward
             self.reward = math.exp(-af_dis)
-            # 获取深度摄像头信息
-            rgb = self.camera.read_color_data()
-            dep = self.camera.read_depth_data()
-            rgb = np.array(rgb)
-            dep = np.array(dep)
-            dep = dep[:, :, np.newaxis]
-            rgbd = np.concatenate((rgb, dep), axis=2)
             # 尝试抓取
             self.close()
             # 抓取成功和碰撞到环境均为结束
@@ -339,18 +426,30 @@ class Robot(object):
                 done = True
             else:
                 self.open()
+            # 获取状态
+        state = self.get_state()
         return state, reward, done
 
         # print(end_x, end_y, end_z)
+
+    def read_depth_data(self):
+        # 获取深度摄像头信息
+        rgb = self.camera.read_color_data()
+        dep = self.camera.read_depth_data()
+        rgb = np.array(rgb)
+        dep = np.array(dep)
+        dep = dep[:, :, np.newaxis]
+        rgbd = np.concatenate((rgb, dep), axis=2)
+        new_rgbd = cv2.resize(rgbd, (224, 224))
+        return new_rgbd
+
+    def get_state(self):
+        return self.arm_goal, self.read_depth_data()
 
     # 初始化机器人手臂和物块位置以及RViz中的场景
     def reset(self):
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         self.arm.set_joint_value_target(self.arm_goal)
-        self.cube_manager.reset_cube(rand=True)
-        self.Box_position = self.cube_manager.read_cube_pose("cube1")["init"]
-        self.Box_position[0] -= 0.2
-        self.Box_position[2] -= 0.1
         self.arm.go()
         rospy.sleep(1)
         self.grasping_client.updateScene()
@@ -358,12 +457,19 @@ class Robot(object):
 
     def sample(self):
         # -0.5 ~ 0.5
-        return np.random.rand(7)-0.5
+        return (2*np.pi*np.random.rand(7)-np.pi).to(device)
 
 
 if __name__ == '__main__':
+    cube_manager = CubesManager()
     robot = Robot()
     while True:
-        s, r, d = robot.step(robot.sample())
-        if d:
-            break
+        robot.reset()
+        cube_manager.reset_cube(rand=True)
+        Box_position = cube_manager.read_cube_pose("cube1")
+        Box_position[0] -= 0.2
+        Box_position[2] -= 0.1
+        robot.Box_position = Box_position
+        print(cube_manager.read_cube_pose("cube1"))
+        print(robot.Box_position)
+        rospy.sleep(3)

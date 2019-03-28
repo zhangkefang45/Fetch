@@ -91,6 +91,5 @@ if __name__ == '__main__':
         if img is None:
             continue
         cv2.imwrite("images/"+str(i)+".png", img)
-
         print i
         i=i+1
