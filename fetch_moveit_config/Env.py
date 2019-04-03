@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import argparse, cv2, math, os, rospy, sys, threading, time
+# from pprint import pprint
+from sensor_msgs.msg import CameraInfo, Image, JointState, PointCloud2
 import actionlib
 import copy
 import math
@@ -11,31 +13,47 @@ import control_msgs.msg
 import random
 import cv2
 import numpy as np
-from gazebo_msgs.msg import  ModelState, ModelStates
-from geometry_msgs.msg import Pose, Quaternion, PoseStamped
-from gazebo_msgs.srv import GetLinkState
-from moveit_msgs.msg import RobotTrajectory
-from trajectory_msgs.msg import JointTrajectoryPoint
+from gazebo_msgs.msg import ModelState, ModelStates
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from geometry_msgs.msg import Quaternion
 from moveit_python import (MoveGroupInterface,
                            PlanningSceneInterface,
                            PickPlaceInterface)
-from geometry_msgs.msg import PoseStamped, Pose
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from tf.transformations import quaternion_from_euler
 from moveit_python.geometry import rotate_pose_msg_by_euler_angles
-from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 from control_msgs.msg import PointHeadAction, PointHeadGoal
 from grasping_msgs.msg import FindGraspableObjectsAction, FindGraspableObjectsGoal
-from geometry_msgs.msg import PoseStamped
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from camera import RGBD
+
+from cv_bridge import CvBridge, CvBridgeError
 
 # 超参数
 CLOSED_POS = 0.0  # The position for a fully-closed gripper (meters).
 OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
 ACTION_SERVER = 'gripper_controller/gripper_action'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+# Move base using navigation stack
+class MoveBaseClient(object):
+
+    def __init__(self):
+        self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+        rospy.loginfo("Waiting for move_base...")
+        self.client.wait_for_server()
+
+    def goto(self, x, y, theta, frame="map"):
+        move_goal = MoveBaseGoal()
+        move_goal.target_pose.pose.position.x = x
+        move_goal.target_pose.pose.position.y = y
+        move_goal.target_pose.pose.orientation.z = math.sin(theta/2.0)
+        move_goal.target_pose.pose.orientation.w = math.cos(theta/2.0)
+        move_goal.target_pose.header.frame_id = frame
+        move_goal.target_pose.header.stamp = rospy.Time.now()
+
+        # TODO wait for things to work
+        self.client.send_goal(move_goal)
+        self.client.wait_for_result()
 
 class PointHeadClient(object):
 
@@ -86,6 +104,12 @@ class GraspingClient(object):
         # insert objects to scene
         objects = list()
         idx = -1
+
+        if not find_result or find_result.objects == []:
+            # rotate the fetch and head todo
+            print "false"
+            return False
+
         for obj in find_result.objects:
             idx += 1
             obj.object.name = "object%d"%idx
@@ -123,6 +147,7 @@ class GraspingClient(object):
         #for object in objects:
         #    print(object[0].object.name, object[1])
         #exit(-1)
+        return True
 
     def getGraspableObject(self):
         graspable = None
@@ -215,7 +240,7 @@ class GraspingClient(object):
 
 
 class CubesManager(object):
-    CubeMap = {'cube1': {'init': [0.8, 0.1, 0.75]}}
+    CubeMap = {'demo_cube': {'init': [0.8, 0.1, 0.75]}}
 
     def __init__(self):
         """
@@ -283,7 +308,7 @@ class CubesManager(object):
         """
         self.cubes_pose.model_name = name
         p = self.cubes_pose.pose
-        cube_init = self.CubeMap[name]["init"]
+        # cube_init = self.CubeMap[name]["init"]
         p.position.x = pose[0]
         p.position.y = pose[1]
         p.position.z = pose[2]
@@ -313,30 +338,34 @@ class Robot(object):
     action_bound = [-1, 1]  # 转动的角度范围
     state_dim = 7  # 7个观测值
     action_dim = 7  # 7个动作
-
+    Robot = {'fetch': {'init': [0, 0, 0]}}
     def __init__(self):
         # 初始化move_group的API
         moveit_commander.roscpp_initialize(sys.argv)
 
         # 初始化ROS节点
         rospy.init_node('moveit_demo')
-
+        self.camera = RGBD()
+        # robot reset
+        self.robot_pose = ModelState()
+        self.robot_state = dict()
+        self.pose_pub = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         # 初始化需要使用move group控制的机械臂中的arm group
         self.arm = moveit_commander.MoveGroupCommander('arm')
         self.gripper = moveit_commander.MoveGroupCommander('gripper')
         self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
         self._client.wait_for_server(rospy.Duration(10))
-        self.camera = RGBD()
         self.Box_position = [0.6, 0.1, 0.65]
         # 获取终端link的名称
         self.end_effector_link = self.arm.get_end_effector_link()
         # 获取场景中的物体
         self.head_action = PointHeadClient()
         self.grasping_client = GraspingClient()
+        # self.move_base = MoveBaseClient()
         # 向下看
         self.head_action.look_at(1.2, 0.0, 0.0, "base_link")
         # 初始化机器人手臂位置
-        self.arm_goal=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.arm_goal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.reset()
         # 初始化reward
         now_position = self.gripper.get_current_pose("gripper_link").pose.position
@@ -386,27 +415,46 @@ class Robot(object):
         success = True
 
         # 转动一定的角度(执行动作)
-        self.arm_goal = action*self.dt
-        self.arm_goal = np.clip(self.arm_goal, *self.action_bound)
-        print(self.arm_goal)
+        # self.arm_goal[0] = self.arm_goal[0] % (np.pi/4)
+        limit = [1.6, 1.22, 3.14, 2.25, 3.14, 2.16, 3.14]
+        # self.arm_goal = action[0] % (np.pi/4)
+        # if action.shape[0] == 1:
+        self.arm_goal += action[0]
+        # if action.shape[0] == 7:
+        #     self.arm_goal += action
+
+        for i in range(7):
+            self.arm_goal[i] = self.arm_goal[i] % (limit[i] * 2)  # change the limit for each joint todo
+            self.arm_goal[i] -= limit[i]
+        # [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
+        # self.arm_goal[0] = 1
+        # self.arm_goal[1] = 0
+        # self.arm_goal[2] = 2
+        # self.arm_goal[3] = 0
+        # self.arm_goal[4] = 0
+        # self.arm_goal[5] = 1
+        # self.arm_goal[6] = 0
+        # print "action: ", action  # todo
+        # self.arm_goal = np.clip(self.arm_goal, *self.action_bound)
+        # print("GOAL_ARM:", self.arm_goal)
         try:
-            self.arm.set_joint_value_target(self.arm_goal)
+            self.arm.set_joint_value_target(self.arm_goal.tolist())
             success = self.arm.go()
             rospy.sleep(1)
         except:
             done = True
         print(success)
         if not success or done:    # 规划失败，发生碰撞
-            reward = -1
+            reward = -10
             done = True
         else:                   # 规划成功，开始运动
-            # 计算距离物块的距离，来返回reawrd
+            # 计算距离物块的距离，来返回reward
             af_position = self.gripper.get_current_pose("gripper_link").pose.position
             af_dis = math.sqrt(math.pow(af_position.x - self.Box_position[0], 2)
                                 + math.pow(af_position.y - self.Box_position[1], 2)
                                 + math.pow(af_position.z - self.Box_position[2], 2))
-            reward = math.exp(-af_dis) - self.reward
-            self.reward = math.exp(-af_dis)
+            reward = math.exp(-af_dis)*10 - self.reward
+            self.reward = math.exp(-af_dis)*10
             # 尝试抓取
             self.close()
             # 抓取成功和碰撞到环境均为结束
@@ -422,7 +470,7 @@ class Robot(object):
                 # 再次获取夹爪的距离(范围：0.3 ~ 0.13)
                 dis = math.sqrt(pow(l.x - r.x, 2) + pow(l.y - r.y, 2) + pow(l.z - r.z, 2))
                 if dis > 0.31:
-                    reward += 10
+                    reward += 100
                 done = True
             else:
                 self.open()
@@ -434,8 +482,11 @@ class Robot(object):
 
     def read_depth_data(self):
         # 获取深度摄像头信息
+        rospy.sleep(2)
         rgb = self.camera.read_color_data()
         dep = self.camera.read_depth_data()
+        dep[np.transpose(np.argwhere(np.isnan(dep)))[0], np.transpose(np.argwhere(np.isnan(dep)))[1]]=0
+        # if the depth value is nan to 0 todo
         rgb = np.array(rgb)
         dep = np.array(dep)
         dep = dep[:, :, np.newaxis]
@@ -444,32 +495,65 @@ class Robot(object):
         return new_rgbd
 
     def get_state(self):
+        # self.camera = RGBD()
         return self.arm_goal, self.read_depth_data()
+
 
     # 初始化机器人手臂和物块位置以及RViz中的场景
     def reset(self):
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
+        print "reset:", type(self.arm_goal[0])
+        # self.arm_goal = [0, 0, 0, 0, 0, 0, 0]
         self.arm.set_joint_value_target(self.arm_goal)
         self.arm.go()
+        rospy.sleep(2)
+        self.reset_robot()
         rospy.sleep(1)
-        self.grasping_client.updateScene()
-        rospy.sleep(5)
+        while not self.grasping_client.updateScene():
+            print "-----update scence fail-----"
+            self.reset_robot()
+        rospy.sleep(3)
+
+    def reset_robot(self):
+        for k, v in self.Robot.items():
+            self.set_robot_pose(k, v['init'])
+
+    def set_robot_pose(self, name, pose, orient=None):
+        """
+        :param name: cube name, a string
+        :param pose: cube position, a list of three float, [x, y, z]
+        :param orient: cube orientation, a list of three float, [ix, iy, iz]
+        :return:
+        """
+        self.robot_pose.model_name = name
+        p = self.robot_pose.pose
+        # cube_init = self.CubeMap[name]["init"]
+        p.position.x = pose[0]
+        p.position.y = pose[1]
+        p.position.z = pose[2]
+        if orient is None:
+            orient = [0, 0, 0]
+        q = quaternion_from_euler(orient[0], orient[1], orient[2])
+        p.orientation = Quaternion(*q)
+        self.pose_pub.publish(self.robot_pose)
 
     def sample(self):
         # -0.5 ~ 0.5
         return (2*np.pi*np.random.rand(7)-np.pi).to(device)
 
 
+
 if __name__ == '__main__':
-    cube_manager = CubesManager()
+    # cube_manager = CubesManager()
     robot = Robot()
-    while True:
-        robot.reset()
-        cube_manager.reset_cube(rand=True)
-        Box_position = cube_manager.read_cube_pose("cube1")
-        Box_position[0] -= 0.2
-        Box_position[2] -= 0.1
-        robot.Box_position = Box_position
-        print(cube_manager.read_cube_pose("cube1"))
-        print(robot.Box_position)
-        rospy.sleep(3)
+    robot.move()
+    # while True:
+    #     robot.reset()
+    #     cube_manager.reset_cube(rand=True)
+    #     Box_position = cube_manager.read_cube_pose("demo_cube")
+    #     Box_position[0] -= 0.2
+    #     Box_position[2] -= 0.1
+    #     robot.Box_position = Box_position
+    #     print(cube_manager.read_cube_pose("demo_cube"))
+    #     print(robot.Box_position)
+    #     rospy.sleep(3)

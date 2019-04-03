@@ -1,19 +1,18 @@
-import torch
-import math
-import rospy
-import time
+import cv2
 from DQN import DQN
 from Env import Robot, CubesManager
 
 MAX_EPISODES = 5000
 MAX_EP_STEPS = 200
 MEMORY_CAPACITY = 50
+
 if __name__ == "__main__":
+
     robot = Robot()
-    cubm = CubesManager()
     s_dim = robot.state_dim
     a_dim = robot.action_dim
     a_bound = robot.action_bound
+    cubm = CubesManager()
     rl = DQN()
 
     for i in range(MAX_EPISODES):

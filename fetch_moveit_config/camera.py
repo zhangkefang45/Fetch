@@ -1,17 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import argparse, cv2, math, os, rospy, sys, threading, time
-from pprint import pprint
+# from pprint import pprint
 from sensor_msgs.msg import CameraInfo, Image, JointState, PointCloud2
 from cv_bridge import CvBridge, CvBridgeError
 
-import tf
-import tf2_ros
-import tf2_geometry_msgs
+# import tf
+# import tf2_ros
+# import tf2_geometry_msgs
 
 class RGBD(object):
 
     def __init__(self):
+        # rospy.init_node('take_photo')
+
         """Similar to the HSR version, but with Fetch topic names."""
         topic_name_c = 'head_camera/rgb/image_raw'
         topic_name_i = 'head_camera/rgb/camera_info'
@@ -24,7 +26,6 @@ class RGBD(object):
         self._input_point_cloud2 = None
         self._info = None
         self.is_updated = False
-
         self._sub_color_image = rospy.Subscriber(topic_name_c, Image, self._color_image_cb)
         self._sub_depth_image = rospy.Subscriber(topic_name_d, Image, self._depth_image_cb)
         self._sub_point_cloud2 = rospy.Subscriber(topic_name_p, PointCloud2, self._point_cloud2_cb)
@@ -46,7 +47,7 @@ class RGBD(object):
             # b, g, r = cv2.split(color)
             # cv2_img = cv2.merge([r, g, b])
             # self._input_color_image = cv2_img
-            self._input_color_image = self._bridge.imgmsg_to_cv2(data, "bgr16")
+            self._input_color_image = self._bridge.imgmsg_to_cv2(data, "bgr16")  # todo
             self.color_time_stamped = data.header.stamp
             self.is_updated = True
         except CvBridgeError as cv_bridge_exception:
@@ -87,7 +88,7 @@ if __name__ == '__main__':
     rgb = RGBD()
     i=1
     while i <= 150:
-        img = rgb.read_depth_data()
+        img = rgb.read_color_data()  # read_depth_data()
         if img is None:
             continue
         cv2.imwrite("images/"+str(i)+".png", img)
