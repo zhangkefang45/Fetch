@@ -8,12 +8,12 @@ import math
 import random
 
 # 超参数
-BATCH_SIZE = 18
-LR = 0.0001                   # learning rate
+BATCH_SIZE = 32
+LR = 0.001                   # learning rate
 EPSILON = 0.9               # 最优选择动作百分比
 GAMMA = 0.9                 # 奖励递减参数
 TARGET_REPLACE_ITER = 100   # Q 现实网络的更新频率
-MEMORY_CAPACITY = 100      # 记忆库大小
+MEMORY_CAPACITY = 1000      # 记忆库大小
 N_ACTIONS = 7               # 机械臂能做的动作
 N_STATES = 224*224*4
 
@@ -89,7 +89,7 @@ class DQN(object):
             action = self.eval_net.forward(image_view, joint_view).cpu().detach().numpy()
             # action = np.array(self.eval_net.forward(image_view.to(device), joint_view.to(device)))
         else:
-            action = np.random.uniform(low=-0.5, high=0.5, size=7)
+            action = np.random.uniform(low=-1.5, high=1.5, size=7)
             action = action[np.newaxis, :]
         return action
 
@@ -144,6 +144,7 @@ class DQN(object):
         self.optimizer.step()
         torch.save(self.eval_net, 'eval_dqn.pkl')
         torch.save(self.target_net, 'target_dqn.pkl')
+
 
 if __name__ == "__main__":
     net = DQN()

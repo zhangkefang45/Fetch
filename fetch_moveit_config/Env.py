@@ -25,6 +25,7 @@ from control_msgs.msg import PointHeadAction, PointHeadGoal
 from grasping_msgs.msg import FindGraspableObjectsAction, FindGraspableObjectsGoal
 from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
 from camera import RGBD
+from geometry_msgs.msg import PoseStamped, Pose
 
 from cv_bridge import CvBridge, CvBridgeError
 
@@ -416,7 +417,8 @@ class Robot(object):
 
         # 转动一定的角度(执行动作)
         # self.arm_goal[0] = self.arm_goal[0] % (np.pi/4)
-        limit = [1.6, 1.22, 3.14, 2.25, 3.14, 2.16, 3.14]
+        # self.arm_goal = [(-0.6~0.6), (0~-0.8), (0), (0~1.25), 0, 1.7, 0]
+        limit = [0.6, -0.8, 10, 1.25, 3.14, 2.16, 3.14]
         # self.arm_goal = action[0] % (np.pi/4)
         # if action.shape[0] == 1:
         self.arm_goal += action[0]
@@ -426,6 +428,10 @@ class Robot(object):
         for i in range(7):
             self.arm_goal[i] = self.arm_goal[i] % (limit[i] * 2)  # change the limit for each joint todo
             self.arm_goal[i] -= limit[i]
+        self.arm_goal[1] = -math.fabs(self.arm_goal[1])
+        self.arm_goal[2] = 0
+        self.arm_goal[3] = math.fabs(self.arm_goal[3])
+
         # [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         # self.arm_goal[0] = 1
         # self.arm_goal[1] = 0
@@ -441,6 +447,9 @@ class Robot(object):
             self.arm.set_joint_value_target(self.arm_goal.tolist())
             success = self.arm.go()
             rospy.sleep(1)
+
+
+
         except:
             done = True
         print(success)
@@ -453,8 +462,8 @@ class Robot(object):
             af_dis = math.sqrt(math.pow(af_position.x - self.Box_position[0], 2)
                                 + math.pow(af_position.y - self.Box_position[1], 2)
                                 + math.pow(af_position.z - self.Box_position[2], 2))
-            reward = math.exp(-af_dis)*10 - self.reward
-            self.reward = math.exp(-af_dis)*10
+            reward = (-af_dis)*10 - self.reward
+            self.reward = (-af_dis)*10
             # 尝试抓取
             self.close()
             # 抓取成功和碰撞到环境均为结束
@@ -471,6 +480,7 @@ class Robot(object):
                 dis = math.sqrt(pow(l.x - r.x, 2) + pow(l.y - r.y, 2) + pow(l.z - r.z, 2))
                 if dis > 0.31:
                     reward += 100
+                    print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 done = True
             else:
                 self.open()
@@ -501,6 +511,9 @@ class Robot(object):
 
     # 初始化机器人手臂和物块位置以及RViz中的场景
     def reset(self):
+        # self.arm_goal = [(-0.6~0.6), (0~-0.8), (0), (0~1.25), 0, 1.7, 0]
+        # [0.6, -0.8, 0, 0.35, 0, 1.7, 0]
+        self.arm_goal = [0.0, -0.8, 0, 1.25, 0, 0, 0]
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         print "reset:", type(self.arm_goal[0])
         # self.arm_goal = [0, 0, 0, 0, 0, 0, 0]
@@ -540,6 +553,13 @@ class Robot(object):
     def sample(self):
         # -0.5 ~ 0.5
         return (2*np.pi*np.random.rand(7)-np.pi).to(device)
+
+    def test(self):
+
+        # self.arm_goal = [0.02, -0.7, 2.66, 0.130, 0.22, -2.16, -0.31]
+        self.arm_goal = [0.0, 0, 0, 0.0, 0.0, 0.0, 0.0]
+
+        self.arm.go()
 
 
 
