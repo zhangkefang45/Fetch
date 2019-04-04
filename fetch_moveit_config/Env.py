@@ -240,7 +240,7 @@ class GraspingClient(object):
 
 
 class CubesManager(object):
-    CubeMap = {'demo_cube': {'init': [0.8, 0.1, 0.75]}}
+    CubeMap = {'cube1': {'init': [0.8, 0.1, 0.75]}}
 
     def __init__(self):
         """
@@ -355,7 +355,7 @@ class Robot(object):
         self.gripper = moveit_commander.MoveGroupCommander('gripper')
         self._client = actionlib.SimpleActionClient(ACTION_SERVER, control_msgs.msg.GripperCommandAction)
         self._client.wait_for_server(rospy.Duration(10))
-        self.Box_position = [0.6, 0.1, 0.65]
+        self.Box_position = [0.8, 0.1, 0.75]
         # 获取终端link的名称
         self.end_effector_link = self.arm.get_end_effector_link()
 
@@ -422,8 +422,8 @@ class Robot(object):
         c = copy.deepcopy(z)
         self.target_pose.header.frame_id = self.reference_frame
         self.target_pose.header.stamp = rospy.Time.now()
-        self.target_pose.pose.position.x = a % 0.3 + 0.4  # 0.70
-        self.target_pose.pose.position.y = b % 0.7 - 0.35 # 0.0
+        self.target_pose.pose.position.x = a # % 0.3 + 0.4  # 0.70
+        self.target_pose.pose.position.y = b # % 0.7 - 0.35 # 0.0
         self.target_pose.pose.position.z = c
         self.target_pose.pose.orientation.x = -0.0000
         self.target_pose.pose.orientation.y = 0.681666289017
@@ -455,7 +455,7 @@ class Robot(object):
         self.end_goal += action[0]
         temporarity = copy.deepcopy(self.end_goal)
 
-        you_want_to_pick_now = False
+        you_want_to_pick_now = True
         if you_want_to_pick_now:  # todo
             temporarity = copy.deepcopy(self.Box_position)
         # if action.shape[0] == 7:
@@ -626,6 +626,26 @@ class Robot(object):
         # print "it :", traj
         self.arm.execute(traj)
         rospy.sleep(1)
+
+    def test1(self):
+        self.set_end_pose(0.8 - 0.17, 0.1, 1)
+        self.go_end_pose()
+        rospy.sleep(1)
+        self.set_end_pose(0.8 - 0.17, 0.1, 0.91)
+        self.go_end_pose()
+        rospy.sleep(1)
+        self.close()
+        rospy.sleep(1)
+        self.set_end_pose(0.8 - 0.17, 0.1, 1)
+        self.go_end_pose()
+        rospy.sleep(1)
+        self.set_end_pose(0.8 - 0.17, -0.3, 1)
+        self.go_end_pose()
+        rospy.sleep(1)
+        self.set_end_pose(0.8 - 0.17, -0.3, 0.91)
+        self.go_end_pose()
+        rospy.sleep(1)
+        self.open()
 
 
 if __name__ == '__main__':

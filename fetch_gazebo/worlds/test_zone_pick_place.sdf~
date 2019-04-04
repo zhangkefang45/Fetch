@@ -8,14 +8,44 @@
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://table_cube</uri>
+      <uri>model://cafe_table</uri>
       <name>table1</name>
       <pose>1.0 0 -0.08 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://cafe_table</uri>
+      <name>table2</name>
+      <pose>-3 5 0 0 0 1.57</pose>
     </include>
     <include>
       <uri>model://demo_cube</uri>
       <name>cube1</name>
       <pose>0.8 0.1 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube1</uri>
+      <name>cube2</name>
+      <pose>0.9 -0.3 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube1</uri>
+      <name>cube3</name>
+      <pose>1.0 0.4 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube1</uri>
+      <name>cube4</name>
+      <pose>0.7 0.0 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube1</uri>
+      <name>cube5</name>
+      <pose>0.86 0.25 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube1</uri>
+      <name>cube6</name>
+      <pose>0.92 -0.4 0.75 0 0 0</pose>
     </include>
   </world>
 </sdf>

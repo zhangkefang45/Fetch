@@ -1,11 +1,13 @@
 <package>
   <name>fetch_gazebo</name>
-  <version>0.7.1</version>
+  <version>0.8.2</version>
   <description>
     Gazebo package for Fetch.
   </description>
   <author>Michael Ferguson</author>
-  <maintainer email="mferguson@fetchrobotics.com">Michael Ferguson</maintainer>
+  <maintainer email="amoriarty@fetchrobotics.com">Alex Moriarty</maintainer>
+  <maintainer email="narora@fetchrobotics.com">Niharika Arora</maintainer>
+  <maintainer email="selliott@fetchrobotics.com">Sarah Elliott</maintainer>
   <license>BSD</license>
   <url>http://ros.org/wiki/fetch_gazebo</url>
   
@@ -14,6 +16,7 @@
   <build_depend>angles</build_depend>
   <build_depend>control_toolbox</build_depend>
   <build_depend>gazebo_ros</build_depend>
+  <build_depend>libgazebo7-dev</build_depend>
   <build_depend>robot_controllers</build_depend>
   <build_depend>robot_controllers_interface</build_depend>
 
@@ -21,6 +24,7 @@
   <run_depend>control_toolbox</run_depend>
   <run_depend>depth_image_proc</run_depend>
   <run_depend>fetch_description</run_depend>
+  <run_depend>gazebo</run_depend>
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>geometry_msgs</run_depend>

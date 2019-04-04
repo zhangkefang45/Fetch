@@ -173,8 +173,6 @@ class GraspingClient(object):
 
     def getGraspableCube(self):
         graspable = None
-	print(self.objects)
-	rospy.sleep(10)
         for obj in self.objects:
             # need grasps
             if len(obj.grasps) < 1:

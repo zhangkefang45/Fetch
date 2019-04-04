@@ -1,11 +1,13 @@
 <package>
   <name>fetch_gazebo_demo</name>
-  <version>0.7.1</version>
+  <version>0.8.2</version>
   <description>
     Demos for fetch_gazebo package.
   </description>
   <author>Michael Ferguson</author>
-  <maintainer email="mferguson@fetchrobotics.com">Michael Ferguson</maintainer>
+  <maintainer email="amoriarty@fetchrobotics.com">Alex Moriarty</maintainer>
+  <maintainer email="narora@fetchrobotics.com">Niharika Arora</maintainer>
+  <maintainer email="selliott@fetchrobotics.com">Sarah Elliott</maintainer>
   <license>BSD</license>
   <url>http://ros.org/wiki/fetch_gazebo_demo</url>
   
