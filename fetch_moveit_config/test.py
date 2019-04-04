@@ -2,7 +2,7 @@ import math
 from camera import RGBD
 from DQN import DQN
 from Env import Robot, CubesManager
-
+import copy
 MAX_EPISODES = 5000
 MAX_EP_STEPS = 100
 MEMORY_CAPACITY = 1000
@@ -19,16 +19,17 @@ if __name__ == '__main__':
     for i in range(MAX_EPISODES):
         cubm.reset_cube(rand=True)
         Box_position = cubm.read_cube_pose("demo_cube")
-        Box_position[0] -= 0.2
-        Box_position[2] -= 0.1
-        robot.Box_position = Box_position
+        # Box_position[0] -= 0.2
+        # Box_position[2] -= 0.1
+        print "cube position:", Box_position
+        robot.Box_position = copy.deepcopy(Box_position)
         robot.reset()
         now_position = robot.gripper.get_current_pose("gripper_link").pose.position
         now_dis = math.sqrt(math.pow(now_position.x - robot.Box_position[0], 2)
                            + math.pow(now_position.y - robot.Box_position[1], 2)
                            + math.pow(now_position.z - robot.Box_position[2], 2))
         robot.reward = -10 * now_dis
-        # print(cubm.read_cube_pose("cube1"))
+        # 5print(cubm.read_cube_pose("cube1"))
         # print(robot.Box_position)
         s = robot.get_state()
         st = 0
@@ -42,7 +43,7 @@ if __name__ == '__main__':
             r = -r
             rl.store_transition(s, a, r, s_)
 
-            if rl.memory_counter > 1000:
+            if rl.memory_counter > 500:
                 rl.learn()
                 print "---------{learning}----------"
             print "memory_counter:", rl.memory_counter

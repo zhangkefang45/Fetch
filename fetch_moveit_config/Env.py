@@ -107,8 +107,7 @@ class GraspingClient(object):
         idx = -1
 
         if not find_result or find_result.objects == []:
-            # rotate the fetch and head todo
-            print "false"
+            print "find object false"
             return False
 
         for obj in find_result.objects:
@@ -359,6 +358,11 @@ class Robot(object):
         self.Box_position = [0.6, 0.1, 0.65]
         # 获取终端link的名称
         self.end_effector_link = self.arm.get_end_effector_link()
+
+        # 设置目标位置所使用的参考坐标系
+        self.reference_frame = 'base_link'
+
+        self.arm.set_pose_reference_frame(self.reference_frame)
         # 获取场景中的物体
         self.head_action = PointHeadClient()
         self.grasping_client = GraspingClient()
@@ -367,6 +371,7 @@ class Robot(object):
         self.head_action.look_at(1.2, 0.0, 0.0, "base_link")
         # 初始化机器人手臂位置
         self.arm_goal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.end_goal = [0.0, 0.0, 0.0]
         self.reset()
         # 初始化reward
         now_position = self.gripper.get_current_pose("gripper_link").pose.position
@@ -386,6 +391,7 @@ class Robot(object):
         # 设置位置(单位：米)和姿态（单位：弧度）的允许误差
         self.arm.set_goal_position_tolerance(0.01)
         self.arm.set_goal_orientation_tolerance(0.05)
+        self.target_pose = PoseStamped()
 
     def open(self):
         """Opens the gripper.
@@ -410,28 +416,56 @@ class Robot(object):
         goal.command.max_effort = max_effort
         self._client.send_goal_and_wait(goal, rospy.Duration(10))
 
+    def set_end_pose(self, x, y, z):
+        a = copy.deepcopy(x)
+        b = copy.deepcopy(y)
+        c = copy.deepcopy(z)
+        self.target_pose.header.frame_id = self.reference_frame
+        self.target_pose.header.stamp = rospy.Time.now()
+        self.target_pose.pose.position.x = a % 0.3 + 0.4  # 0.70
+        self.target_pose.pose.position.y = b % 0.7 - 0.35 # 0.0
+        self.target_pose.pose.position.z = c
+        self.target_pose.pose.orientation.x = -0.0000
+        self.target_pose.pose.orientation.y = 0.681666289017
+        self.target_pose.pose.orientation.z = 0
+        self.target_pose.pose.orientation.w = 0.73166304586
+        self.end_goal[0] = self.target_pose.pose.position.x
+        self.end_goal[1] = self.target_pose.pose.position.y
+        self.end_goal[2] = self.target_pose.pose.position.z
+        # print self.target_pose.pose.position
+
+    def go_end_pose(self):
+        self.arm.set_start_state_to_current_state()
+        self.arm.set_pose_target(self.target_pose, self.end_effector_link)
+        traj = self.arm.plan()
+        success = self.arm.execute(traj)
+        rospy.sleep(1)
+        return success
+
     def step(self, action):
         done = False
         state = None
         success = True
-
         # 转动一定的角度(执行动作)
         # self.arm_goal[0] = self.arm_goal[0] % (np.pi/4)
         # self.arm_goal = [(-0.6~0.6), (0~-0.8), (0), (0~1.25), 0, 1.7, 0]
         limit = [0.6, -0.8, 10, 1.25, 3.14, 2.16, 3.14]
         # self.arm_goal = action[0] % (np.pi/4)
         # if action.shape[0] == 1:
-        self.arm_goal += action[0]
+        self.end_goal += action[0]
+        temporarity = copy.deepcopy(self.end_goal)
+
+        you_want_to_pick_now = False
+        if you_want_to_pick_now:  # todo
+            temporarity = copy.deepcopy(self.Box_position)
         # if action.shape[0] == 7:
         #     self.arm_goal += action
-
-        for i in range(7):
-            self.arm_goal[i] = self.arm_goal[i] % (limit[i] * 2)  # change the limit for each joint todo
-            self.arm_goal[i] -= limit[i]
-        self.arm_goal[1] = -math.fabs(self.arm_goal[1])
-        self.arm_goal[2] = 0
-        self.arm_goal[3] = math.fabs(self.arm_goal[3])
-
+        # for i in range(7):
+        #     self.arm_goal[i] = self.arm_goal[i] % (limit[i] * 2)  # change the limit for each joint todo
+        #     self.arm_goal[i] -= limit[i]
+        # self.arm_goal[1] = -math.fabs(self.arm_goal[1])
+        # self.arm_goal[2] = 0
+        # self.arm_goal[3] = math.fabs(self.arm_goal[3])
         # [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         # self.arm_goal[0] = 1
         # self.arm_goal[1] = 0
@@ -443,15 +477,24 @@ class Robot(object):
         # print "action: ", action  # todo
         # self.arm_goal = np.clip(self.arm_goal, *self.action_bound)
         # print("GOAL_ARM:", self.arm_goal)
+
+        print "---frist---"
+        self.set_end_pose(temporarity[0]-0.17, temporarity[1], 0.980521666929)
+        print temporarity
         try:
-            self.arm.set_joint_value_target(self.arm_goal.tolist())
-            success = self.arm.go()
-            rospy.sleep(1)
-
-
-
-        except:
+            success = self.go_end_pose()
+            print "---second---"
+            self.set_end_pose(temporarity[0] - 0.17, temporarity[1], 0.91)
+            print temporarity
+            success = self.go_end_pose()
+            # self.arm.set_joint_value_target(self.arm_goal.tolist())
+            # success = self.arm.go()
+            # rospy.sleep(1)
+        except Exception as e:
+            print e.message
             done = True
+
+
         print(success)
         if not success or done:    # 规划失败，发生碰撞
             reward = -10
@@ -469,16 +512,16 @@ class Robot(object):
             # 抓取成功和碰撞到环境均为结束
             l = self.gripper.get_current_pose("l_gripper_finger_link").pose.position
             r = self.gripper.get_current_pose("r_gripper_finger_link").pose.position
-            # 获取夹爪的距离(范围：0.3 ~ 0.13)
+            # 获取夹爪的距离(范围：0.03 ~ 0.13)
             dis = math.sqrt(pow(l.x-r.x, 2)+pow(l.y-r.y, 2)+pow(l.z-r.z, 2))
-            if dis > 0.31:  # 抓取成功
-                self.reset()
+            if dis > 0.031:  # 抓取成功
+                self.pick_up()
                 rospy.sleep(1)
                 l = self.gripper.get_current_pose("l_gripper_finger_link").pose.position
                 r = self.gripper.get_current_pose("r_gripper_finger_link").pose.position
                 # 再次获取夹爪的距离(范围：0.3 ~ 0.13)
                 dis = math.sqrt(pow(l.x - r.x, 2) + pow(l.y - r.y, 2) + pow(l.z - r.z, 2))
-                if dis > 0.31:
+                if dis > 0.031:
                     reward += 100
                     print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 done = True
@@ -487,7 +530,6 @@ class Robot(object):
             # 获取状态
         state = self.get_state()
         return state, reward, done
-
         # print(end_x, end_y, end_z)
 
     def read_depth_data(self):
@@ -506,14 +548,15 @@ class Robot(object):
 
     def get_state(self):
         # self.camera = RGBD()
-        return self.arm_goal, self.read_depth_data()
-
+        # return self.arm_goal, self.read_depth_data()
+        return self.end_goal, self.read_depth_data()
 
     # 初始化机器人手臂和物块位置以及RViz中的场景
     def reset(self):
         # self.arm_goal = [(-0.6~0.6), (0~-0.8), (0), (0~1.25), 0, 1.7, 0]
-        # [0.6, -0.8, 0, 0.35, 0, 1.7, 0]
-        self.arm_goal = [0.0, -0.8, 0, 1.25, 0, 0, 0]
+        # [0.0, -0.8, 0, 1.25, 0, 0, 0]
+
+        self.arm_goal = [0.0, -0.8, 0, 0.7, 0, 1.7, 0]
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
         print "reset:", type(self.arm_goal[0])
         # self.arm_goal = [0, 0, 0, 0, 0, 0, 0]
@@ -521,11 +564,23 @@ class Robot(object):
         self.arm.go()
         rospy.sleep(2)
         self.reset_robot()
+        self.open()
         rospy.sleep(1)
         while not self.grasping_client.updateScene():
             print "-----update scence fail-----"
             self.reset_robot()
+            cubmanager = CubesManager()
+            cubmanager.reset_cube(True)
         rospy.sleep(3)
+        # print "--------------test--------------"
+        # self.test()
+
+    def pick_up(self):
+        self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
+        print "reset:", type(self.arm_goal[0])
+        self.arm.set_joint_value_target(self.arm_goal)
+        self.arm.go()
+        rospy.sleep(2)
 
     def reset_robot(self):
         for k, v in self.Robot.items():
@@ -541,7 +596,7 @@ class Robot(object):
         self.robot_pose.model_name = name
         p = self.robot_pose.pose
         # cube_init = self.CubeMap[name]["init"]
-        p.position.x = pose[0]
+        p.position.x = pose[0] + 0.15
         p.position.y = pose[1]
         p.position.z = pose[2]
         if orient is None:
@@ -555,12 +610,22 @@ class Robot(object):
         return (2*np.pi*np.random.rand(7)-np.pi).to(device)
 
     def test(self):
-
-        # self.arm_goal = [0.02, -0.7, 2.66, 0.130, 0.22, -2.16, -0.31]
-        self.arm_goal = [0.0, 0, 0, 0.0, 0.0, 0.0, 0.0]
-
-        self.arm.go()
-
+        target_pose = PoseStamped()
+        target_pose.header.frame_id = self.reference_frame
+        target_pose.header.stamp = rospy.Time.now()
+        target_pose.pose.position.x = 0.70
+        target_pose.pose.position.y = 0.0
+        target_pose.pose.position.z = 0.9
+        target_pose.pose.orientation.x = -0.0000
+        target_pose.pose.orientation.y = 0.681666289017
+        target_pose.pose.orientation.z = 0
+        target_pose.pose.orientation.w = 0.73166304586
+        self.arm.set_start_state_to_current_state()
+        self.arm.set_pose_target(target_pose, self.end_effector_link)
+        traj = self.arm.plan()
+        # print "it :", traj
+        self.arm.execute(traj)
+        rospy.sleep(1)
 
 
 if __name__ == '__main__':

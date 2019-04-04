@@ -30,9 +30,9 @@ class Net(nn.Module):
         self.conv3 = nn.Conv2d(in_channels=48, out_channels=48, kernel_size=6)
         self.bn3 = nn.BatchNorm2d(48)
 
-        self.fc1 = nn.Linear(48*4*4 + 7, 256)
+        self.fc1 = nn.Linear(48*4*4 + 3, 256)
         self.fc2 = nn.Linear(256, 48)
-        self.fc3 = nn.Linear(48, 7)
+        self.fc3 = nn.Linear(48, 3)
         self.fc3.weight.data *= 10
 
     def forward(self, x, state):
@@ -73,7 +73,7 @@ class DQN(object):
 
         self.learn_step_counter = 0     # 用于target更新计时
         self.memory_counter = 0         # 记忆库计数
-        self.memory = np.zeros((MEMORY_CAPACITY, (224*224*4+7)*2+8))
+        self.memory = np.zeros((MEMORY_CAPACITY, (224*224*4+3)*2+4))
         self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=LR)    # torch1 的优化器
         self.loss_func = nn.MSELoss()  # 误差公式
 
@@ -85,16 +85,16 @@ class DQN(object):
             image_view = image_view / (256 * 256)
             image_view = image_view.astype(np.float32)
             image_view = torch.from_numpy(np.array(image_view).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2).to(device)
-            joint_view = torch.from_numpy(np.array(joint_view).reshape(-1, 7)).to(device)
+            joint_view = torch.from_numpy(np.array(joint_view).reshape(-1, 3)).to(device)
             action = self.eval_net.forward(image_view, joint_view).cpu().detach().numpy()
             # action = np.array(self.eval_net.forward(image_view.to(device), joint_view.to(device)))
         else:
-            action = np.random.uniform(low=-1.5, high=1.5, size=7)
+            action = np.random.uniform(low=-1.5, high=1.5, size=3)
             action = action[np.newaxis, :]
         return action
 
     def store_transition(self, s, a, r, s_):
-        a = np.array(a).reshape(-1, 7)
+        a = np.array(a).reshape(-1, 3)
         if a[0][0] is np.nan:
             return
         s1, s2 = s
@@ -104,10 +104,10 @@ class DQN(object):
             s_ = s
         #  s3 == list == numpy.float todo
         s3, s4 = s_
-        s1 = np.array(s1).reshape(-1, 7)
+        s1 = np.array(s1).reshape(-1, 3)
         s2 = np.array(s2).reshape(-1, 224*224*4)
         r = np.array(r).reshape(-1, 1)
-        s3 = np.array(s3).reshape(-1, 7)
+        s3 = np.array(s3).reshape(-1, 3)
         s4 = np.array(s4).reshape(-1, 224*224*4)
 
         transition = np.hstack((s1, s2, a, r, s3, s4))
@@ -124,12 +124,12 @@ class DQN(object):
         # 抽取记忆库中的批数据
         sample_index = np.random.choice(MEMORY_CAPACITY, BATCH_SIZE)
         b_memory = self.memory[sample_index, :]
-        b_s1 = torch.FloatTensor((b_memory[:, :7]).reshape(-1, 7))
-        b_s2 = torch.FloatTensor((b_memory[:, 7:N_STATES+7]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2)
+        b_s1 = torch.FloatTensor((b_memory[:, :3]).reshape(-1, 3))
+        b_s2 = torch.FloatTensor((b_memory[:, 3:N_STATES+3]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2)
         # b_s = b_s1, b_s2
-        b_a = torch.LongTensor((b_memory[:, N_STATES+7:N_STATES + 14]).reshape(-1, 7).astype(float))
-        b_r = torch.FloatTensor((b_memory[:, N_STATES + 14:N_STATES + 15]).reshape(-1, 1))
-        b_s_1 = torch.FloatTensor((b_memory[:, N_STATES + 15:N_STATES + 22]).reshape(-1, 7))
+        b_a = torch.LongTensor((b_memory[:, N_STATES+3:N_STATES + 6]).reshape(-1, 3).astype(float))
+        b_r = torch.FloatTensor((b_memory[:, N_STATES + 6:N_STATES + 7]).reshape(-1, 1))
+        b_s_1 = torch.FloatTensor((b_memory[:, N_STATES + 7:N_STATES + 10]).reshape(-1, 3))
         b_s_2 = torch.FloatTensor((b_memory[:, -N_STATES:]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2)
 
         # 针对做过的动作b_a, 来选 q_eval 的值, (q_eval 原本有所有动作的值)
@@ -149,7 +149,7 @@ class DQN(object):
 if __name__ == "__main__":
     net = DQN()
 
-    input = torch.randn(7), torch.randn(4, 224, 224)
+    input = torch.randn(3), torch.randn(4, 224, 224)
     out = net.choose_action(input)
     print(out)
 
