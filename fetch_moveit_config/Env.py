@@ -6,7 +6,7 @@ from sensor_msgs.msg import CameraInfo, Image, JointState, PointCloud2
 import actionlib
 import copy
 import math
-import torch
+# import torch
 import rospy, sys
 import moveit_commander
 import control_msgs.msg
@@ -33,7 +33,7 @@ from cv_bridge import CvBridge, CvBridgeError
 CLOSED_POS = 0.0  # The position for a fully-closed gripper (meters).
 OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
 ACTION_SERVER = 'gripper_controller/gripper_action'
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Move base using navigation stack
 class MoveBaseClient(object):
@@ -259,9 +259,9 @@ class CubesManager(object):
                 self.set_cube_pose(k, v['init'])
         else:
             for k, v in self.CubeMap.items():
-                pose = [0.8, 0.1, v["init"][2]]
-                pose[0] += - 0.2 + random.random() * 0.4
-                pose[1] += - 0.2 + random.random() * 0.4
+                pose = [0.8, 0, v["init"][2]]
+                pose[0] += - 0.28 + random.random() * 0.4
+                pose[1] += - 0.35 + random.random() * 0.7
                 self.set_cube_pose(k, pose)
 
     def callback_state(self, data):
@@ -336,8 +336,8 @@ class Robot(object):
     MAX_EFFORT = 100  # Max grasp force, in Newtons
     dt = 0.005  # 转动的速度和 dt 有关
     action_bound = [-1, 1]  # 转动的角度范围
-    state_dim = 7  # 7个观测值
-    action_dim = 7  # 7个动作
+    state_dim = 3  # 7个观测值
+    action_dim = 3  # 7个动作
     Robot = {'fetch': {'init': [0, 0, 0]}}
     def __init__(self):
         # 初始化move_group的API
@@ -423,7 +423,7 @@ class Robot(object):
         self.target_pose.header.frame_id = self.reference_frame
         self.target_pose.header.stamp = rospy.Time.now()
         self.target_pose.pose.position.x = a % 0.3 + 0.4  # 0.70
-        self.target_pose.pose.position.y = b % 0.7 - 0.35 # 0.0
+        self.target_pose.pose.position.y = b % 0.7 - 0.35  # 0.0
         self.target_pose.pose.position.z = c
         self.target_pose.pose.orientation.x = -0.0000
         self.target_pose.pose.orientation.y = 0.681666289017
@@ -435,9 +435,13 @@ class Robot(object):
         # print self.target_pose.pose.position
 
     def go_end_pose(self):
+        rospy.sleep(1)
         self.arm.set_start_state_to_current_state()
         self.arm.set_pose_target(self.target_pose, self.end_effector_link)
+        print "planing"
         traj = self.arm.plan()
+        rospy.sleep(2)
+        print "execute"
         success = self.arm.execute(traj)
         rospy.sleep(1)
         return success
@@ -446,56 +450,24 @@ class Robot(object):
         done = False
         state = None
         success = True
-        # 转动一定的角度(执行动作)
-        # self.arm_goal[0] = self.arm_goal[0] % (np.pi/4)
-        # self.arm_goal = [(-0.6~0.6), (0~-0.8), (0), (0~1.25), 0, 1.7, 0]
-        limit = [0.6, -0.8, 10, 1.25, 3.14, 2.16, 3.14]
-        # self.arm_goal = action[0] % (np.pi/4)
-        # if action.shape[0] == 1:
         self.end_goal += action[0]
-        temporarity = copy.deepcopy(self.end_goal)
+        temporary = copy.deepcopy(self.end_goal)
 
         you_want_to_pick_now = False
         if you_want_to_pick_now:  # todo
-            temporarity = copy.deepcopy(self.Box_position)
-        # if action.shape[0] == 7:
-        #     self.arm_goal += action
-        # for i in range(7):
-        #     self.arm_goal[i] = self.arm_goal[i] % (limit[i] * 2)  # change the limit for each joint todo
-        #     self.arm_goal[i] -= limit[i]
-        # self.arm_goal[1] = -math.fabs(self.arm_goal[1])
-        # self.arm_goal[2] = 0
-        # self.arm_goal[3] = math.fabs(self.arm_goal[3])
-        # [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
-        # self.arm_goal[0] = 1
-        # self.arm_goal[1] = 0
-        # self.arm_goal[2] = 2
-        # self.arm_goal[3] = 0
-        # self.arm_goal[4] = 0
-        # self.arm_goal[5] = 1
-        # self.arm_goal[6] = 0
-        # print "action: ", action  # todo
-        # self.arm_goal = np.clip(self.arm_goal, *self.action_bound)
-        # print("GOAL_ARM:", self.arm_goal)
+            self.Box_position = [0.92, 0, 0]
+            temporary = copy.deepcopy(self.Box_position)
 
-        print "---frist---"
-        self.set_end_pose(temporarity[0]-0.17, temporarity[1], 0.980521666929)
-        print temporarity
+        self.set_end_pose(temporary[0]-0.17, temporary[1], 0.980521666929)
         try:
             success = self.go_end_pose()
-            print "---second---"
-            self.set_end_pose(temporarity[0] - 0.17, temporarity[1], 0.91)
-            print temporarity
+            self.set_end_pose(temporary[0] - 0.17, temporary[1], 0.91)
             success = self.go_end_pose()
-            # self.arm.set_joint_value_target(self.arm_goal.tolist())
-            # success = self.arm.go()
-            # rospy.sleep(1)
         except Exception as e:
             print e.message
             done = True
 
-
-        print(success)
+        print"planing result:", success
         if not success or done:    # 规划失败，发生碰撞
             reward = -10
             done = True
@@ -509,19 +481,20 @@ class Robot(object):
             self.reward = (-af_dis)*10
             # 尝试抓取
             self.close()
+            rospy.sleep(1)
             # 抓取成功和碰撞到环境均为结束
             l = self.gripper.get_current_pose("l_gripper_finger_link").pose.position
             r = self.gripper.get_current_pose("r_gripper_finger_link").pose.position
             # 获取夹爪的距离(范围：0.03 ~ 0.13)
             dis = math.sqrt(pow(l.x-r.x, 2)+pow(l.y-r.y, 2)+pow(l.z-r.z, 2))
-            if dis > 0.031:  # 抓取成功
+            if dis > 0.04:  # 抓取成功
                 self.pick_up()
                 rospy.sleep(1)
                 l = self.gripper.get_current_pose("l_gripper_finger_link").pose.position
                 r = self.gripper.get_current_pose("r_gripper_finger_link").pose.position
                 # 再次获取夹爪的距离(范围：0.3 ~ 0.13)
                 dis = math.sqrt(pow(l.x - r.x, 2) + pow(l.y - r.y, 2) + pow(l.z - r.z, 2))
-                if dis > 0.031:
+                if dis > 0.04:
                     reward += 100
                     print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 done = True
@@ -574,6 +547,7 @@ class Robot(object):
         rospy.sleep(3)
         # print "--------------test--------------"
         # self.test()
+        return True
 
     def pick_up(self):
         self.arm_goal = [1.32, 0.7, 0.0, -2.0, 0.0, -0.57, 0.0]
