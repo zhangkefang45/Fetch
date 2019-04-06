@@ -80,7 +80,7 @@ class DQN(object):
     # 根据神经网络选取一个值
     def choose_action(self, x):
         # x = torch1.unsqueeze(torch1.FloatTensor(x), 0)
-        if np.random.uniform() < EPSILON*(math.exp(self.memory_counter-200) if self.memory_counter <= 200 else 1):
+        if np.random.uniform() < EPSILON*(math.exp(self.memory_counter-1000) if self.memory_counter <= 1000 else 1):
             joint_view, image_view = x
             image_view = image_view / (256 * 256)
             image_view = image_view.astype(np.float32)
@@ -124,13 +124,13 @@ class DQN(object):
         # 抽取记忆库中的批数据
         sample_index = np.random.choice(MEMORY_CAPACITY, BATCH_SIZE)
         b_memory = self.memory[sample_index, :]
-        b_s1 = torch.FloatTensor((b_memory[:, :3]).reshape(-1, 3))
-        b_s2 = torch.FloatTensor((b_memory[:, 3:N_STATES+3]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2)
+        b_s1 = torch.FloatTensor((b_memory[:, :3]).reshape(-1, 3)).to(device)
+        b_s2 = torch.FloatTensor((b_memory[:, 3:N_STATES+3]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2).to(device)
         # b_s = b_s1, b_s2
         b_a = torch.LongTensor((b_memory[:, N_STATES+3:N_STATES + 6]).reshape(-1, 3).astype(float))
-        b_r = torch.FloatTensor((b_memory[:, N_STATES + 6:N_STATES + 7]).reshape(-1, 1))
-        b_s_1 = torch.FloatTensor((b_memory[:, N_STATES + 7:N_STATES + 10]).reshape(-1, 3))
-        b_s_2 = torch.FloatTensor((b_memory[:, -N_STATES:]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2)
+        b_r = torch.FloatTensor((b_memory[:, N_STATES + 6:N_STATES + 7]).reshape(-1, 1)).to(device)
+        b_s_1 = torch.FloatTensor((b_memory[:, N_STATES + 7:N_STATES + 10]).reshape(-1, 3)).to(device)
+        b_s_2 = torch.FloatTensor((b_memory[:, -N_STATES:]).reshape(-1, 224, 224, 4)).permute(0, 3, 1, 2).to(device)
 
         # 针对做过的动作b_a, 来选 q_eval 的值, (q_eval 原本有所有动作的值)
         q_eval = self.eval_net(b_s2, b_s1)              # shape (batch, 1) picture and joint

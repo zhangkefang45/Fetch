@@ -260,8 +260,8 @@ class CubesManager(object):
         else:
             for k, v in self.CubeMap.items():
                 pose = [0.8, 0.1, v["init"][2]]
-                pose[0] += - 0.2 + random.random() * 0.4
-                pose[1] += - 0.2 + random.random() * 0.4
+                pose[0] += - 0.23 + random.random() * 0.4
+                pose[1] += - 0.35 + random.random() * 0.7
                 self.set_cube_pose(k, pose)
 
     def callback_state(self, data):
@@ -371,14 +371,15 @@ class Robot(object):
         self.head_action.look_at(1.2, 0.0, 0.0, "base_link")
         # 初始化机器人手臂位置
         self.arm_goal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.end_goal = [0.0, 0.0, 0.0]
+        self.end_goal = [0.0, 0.0, 1.0]
         self.reset()
         # 初始化reward
-        now_position = self.gripper.get_current_pose("gripper_link").pose.position
-        now_dis = math.sqrt(math.pow(now_position.x - self.Box_position[0], 2)
-                              + math.pow(now_position.y - self.Box_position[1], 2)
-                              + math.pow(now_position.z - self.Box_position[2], 2))
-        self.reward = math.exp(-now_dis)
+        # now_position = self.gripper.get_current_pose("gripper_link").pose.position
+        # now_dis = math.sqrt(math.pow(now_position.x - self.Box_position[0], 2)
+        #                       + math.pow(now_position.y - self.Box_position[1], 2)
+        #                       + math.pow(now_position.z - self.Box_position[2], 2))
+        # self.reward = math.exp(-now_dis)
+        self.dis = 0
         # 更新场景到rviz中
 
         # 设置目标位置所使用的参考坐标系
@@ -422,8 +423,8 @@ class Robot(object):
         c = copy.deepcopy(z)
         self.target_pose.header.frame_id = self.reference_frame
         self.target_pose.header.stamp = rospy.Time.now()
-        self.target_pose.pose.position.x = a # % 0.3 + 0.4  # 0.70
-        self.target_pose.pose.position.y = b # % 0.7 - 0.35 # 0.0
+        self.target_pose.pose.position.x = a % 0.3 + 0.4  # 0.70
+        self.target_pose.pose.position.y = b % 0.7 - 0.35  # 0.0
         self.target_pose.pose.position.z = c
         self.target_pose.pose.orientation.x = -0.0000
         self.target_pose.pose.orientation.y = 0.681666289017
@@ -479,7 +480,7 @@ class Robot(object):
         # print("GOAL_ARM:", self.arm_goal)
 
         print "---frist---"
-        self.set_end_pose(temporarity[0]-0.17, temporarity[1], 0.980521666929)
+        self.set_end_pose(temporarity[0]-0.17, temporarity[1], 1.0)
         print temporarity
         try:
             success = self.go_end_pose()
@@ -646,6 +647,27 @@ class Robot(object):
         self.go_end_pose()
         rospy.sleep(1)
         self.open()
+
+    def test_step(self, action):
+        done = False
+        self.end_goal += action[0]
+        # print "---frist---"
+        x = self.end_goal[0] % 0.3+0.4
+        y = self.end_goal[1] % 0.7-0.35
+        # print x, y
+        dis = math.sqrt(math.pow(x - self.Box_position[0], 2)
+                            + math.pow(y - self.Box_position[1], 2))
+
+        if dis<0.05: # 阈值，可调
+            done = True
+            reward = 100
+        elif dis<= self.dis:
+            reward = 5
+        elif dis > self.dis:
+            reward = -5
+        self.dis = dis
+        new_position = [x, y, 1.0]
+        return new_position, reward, done
 
 
 if __name__ == '__main__':
