@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import math
+import torch
 from camera import RGBD
 from DDPG import  DDPG
 from DQN import  DQN
@@ -17,6 +18,9 @@ if __name__ == "__main__":
     a_bound = robot.action_bound
     cubm = CubesManager()
     rl = DQN()
+
+    rl.eval_net = torch.load('eval_dqn.pkl')
+    rl.target_net = torch.load('target_dqn.pkl')
 
     robot.reset()
     start_position = robot.gripper.get_current_pose("gripper_link").pose.position  # 初始的夹爪位置

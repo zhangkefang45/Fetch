@@ -146,6 +146,8 @@ class DQN(object):
         torch.save(self.target_net, 'target_dqn.pkl')
 
 
+
+
 if __name__ == "__main__":
     net = DQN()
 
