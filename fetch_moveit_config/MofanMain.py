@@ -39,12 +39,12 @@ if __name__ == '__main__':
         ep_r = 0.  # reward of each epoch
         for j in range(MAX_EP_STEPS):
 
-            a = rl.choose_action(np.array(s[0]))
+            a = rl.choose_action(s)
 
             s_, r, done = robot.step(a)
             number += 1
             print "-------the %i step-------" % number
-            rl.store_transition(np.array(s[0]), a, r, np.array(s_[0]))
+            rl.store_transition(s, a, r, s_)
             # print s_[0]
             ep_r += r
             if rl.memory_full:

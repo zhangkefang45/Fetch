@@ -49,6 +49,10 @@ class Net(nn.Module):
         #
         # x = self.conv3(x)
         # x = self.relu(x)
+        self.fc1 = nn.Linear(48*4*4 + 3, 256)
+        self.fc2 = nn.Linear(256, 48)
+        self.fc3 = nn.Linear(48, 3)
+        self.fc3.weight.data * 10
         # x = self.pool(x)
 
         x = x.view(-1, self.num_flat_features(x))

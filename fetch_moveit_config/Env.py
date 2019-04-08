@@ -455,9 +455,9 @@ class Robot(object):
 
         you_want_to_pick_now = False
         if you_want_to_pick_now:  # todo
-            self.Box_position = [0.92, 0, 0]
+            # self.Box_position = [0.92, 0, 0]
             temporary = copy.deepcopy(self.Box_position)
-
+        #
         self.set_end_pose(temporary[0]-0.17, temporary[1], 0.980521666929)
         try:
             success = self.go_end_pose()
