@@ -9,6 +9,7 @@ OPENED_POS = 0.10  # The position for a fully-open gripper (meters).
 ACTION_SERVER = 'gripper_controller/gripper_action'
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+
 class Robot(object):
     MIN_EFFORT = 35  # Min grasp force, in Newtons
     MAX_EFFORT = 100  # Max grasp force, in Newtons

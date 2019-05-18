@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py" line="41" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="6e2efb4c-e4c3-4a3c-85e7-3623526e33a3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/collect_img_goal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/mnist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/plote.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/unet_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fetch_moveit_config/unet_parts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/CHANGELOG.rst" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/CHANGELOG.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/launch/pickplace_playground.launch" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/launch/pickplace_playground.launch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/launch/simulation.launch" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/launch/simulation.launch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/models/demo_cube/model.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/models/demo_cube/model.sdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/models/table_cube/model.config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/models/table_cube/model.sdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/package.xml" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/package.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/worlds/test_zone.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/worlds/test_zone.sdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo/worlds/test_zone_pick_place.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo/worlds/test_zone_pick_place.sdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo_demo/CHANGELOG.rst" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo_demo/CHANGELOG.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo_demo/launch/demo.launch" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo_demo/launch/demo.launch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo_demo/package.xml" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo_demo/package.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo_demo/scripts/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo_demo/scripts/demo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_gazebo_demo/scripts/pick_place_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_gazebo_demo/scripts/pick_place_demo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/Env.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/Env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fetchit_challenge/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_largegear/meshes/largeGear_v1_simple_v2.stl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_largegear/meshes/largeGear_v2.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_largegear/model.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_largegear/model.sdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_top/meshes/gearBoxTop_v1.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_top/meshes/gearBoxTop_v1.stl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_top/model.sdf" beforeDir="false" afterPath="$PROJECT_DIR$/fetchit_challenge/models/gearbox_top/model.sdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetchit_challenge/package.xml" beforeDir="false" afterPath="$PROJECT_DIR$/fetchit_challenge/package.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/FakeRobot.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/FakeRobot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/draw.py" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/draw.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/step.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/step.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetch_moveit_config/table.txt" beforeDir="false" afterPath="$PROJECT_DIR$/fetch_moveit_config/table.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,97 +37,49 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/Env.py">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="255" column="8" selection-start-line="255" selection-start-column="8" selection-end-line="255" selection-end-column="8" />
+            <state relative-caret-position="446">
+              <caret line="155" column="105" selection-start-line="155" selection-start-column="40" selection-end-line="155" selection-end-column="105" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1044">
+              <caret line="160" selection-start-line="160" selection-end-line="160" />
+              <folding>
+                <element signature="e#24#55#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/FakeRobot.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="468">
+              <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/test.py">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="12" column="13" lean-forward="true" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/module.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="488" selection-start-line="488" selection-end-line="488" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/tensor.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7938">
-              <caret line="449" selection-start-line="449" selection-end-line="449" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/functional.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24030">
-              <caret line="1351" selection-start-line="1351" selection-end-line="1351" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/conv.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5616">
-              <caret line="319" selection-start-line="319" selection-end-line="319" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/__init__.pyi">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8820">
-              <caret line="491" column="8" selection-start-line="491" selection-start-column="8" selection-end-line="491" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/DDPG.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="18" column="20" selection-start-line="18" selection-start-column="20" selection-end-line="18" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="28" column="33" selection-end-line="61" selection-end-column="21" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/DQN.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1883">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            <state relative-caret-position="213">
+              <caret line="60" column="23" selection-start-line="60" selection-start-column="23" selection-end-line="60" selection-end-column="23" />
               <folding>
                 <element signature="e#46#58#0" expanded="true" />
               </folding>
@@ -145,7 +87,49 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/unet_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="108">
+              <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#31#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fetch_moveit_config/unet_parts.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+              <folding>
+                <element signature="e#32#44#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>random_read_</find>
+      <find>dep</find>
+      <find>plot</find>
+      <find>plt</find>
+      <find>data_prepare</find>
+      <find>Episode</find>
+      <find>reward:-</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -161,14 +145,26 @@
         <option value="$PROJECT_DIR$/fetch_moveit_config/main.py" />
         <option value="$PROJECT_DIR$/fetch_moveit_config/Env.py" />
         <option value="$PROJECT_DIR$/fetch_moveit_config/test.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/collect_img_goal.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/mnist.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/plote.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/unet.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/unet_parts.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/unet_model.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/draw.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/FakeRobot.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py" />
+        <option value="$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="462" />
-    <option name="y" value="714" />
-    <option name="width" value="1394" />
-    <option name="height" value="1102" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="55" />
+    <option name="y" value="-4" />
+    <option name="width" value="1865" />
+    <option name="height" value="1204" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -195,8 +191,9 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/study/visual-pushing-grasping" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -213,8 +210,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test">
-    <configuration name="DQN" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.ddpgmain">
+    <configuration name="ddpgmain" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Fetch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -227,7 +224,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/DQN.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -236,7 +233,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Env" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="dep_to_position" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Fetch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -249,7 +246,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/Env.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -258,7 +255,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="draw" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Fetch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -271,7 +268,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/draw.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -280,29 +277,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="tensor" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Fetch" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="/usr/local/lib/python2.7/dist-packages/torch" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/usr/local/lib/python2.7/dist-packages/torch/tensor.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="plote" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Fetch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -315,7 +290,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/plote.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rgb_xy" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Fetch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/fetch_moveit_config" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -325,19 +322,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.DQN" />
-      <item itemvalue="Python.Env" />
-      <item itemvalue="Python.main" />
-      <item itemvalue="Python.tensor" />
-      <item itemvalue="Python.test" />
+      <item itemvalue="Python.dep_to_position" />
+      <item itemvalue="Python.plote" />
+      <item itemvalue="Python.rgb_xy" />
+      <item itemvalue="Python.ddpgmain" />
+      <item itemvalue="Python.draw" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.main" />
-        <item itemvalue="Python.DQN" />
-        <item itemvalue="Python.tensor" />
-        <item itemvalue="Python.Env" />
+        <item itemvalue="Python.ddpgmain" />
+        <item itemvalue="Python.draw" />
+        <item itemvalue="Python.rgb_xy" />
+        <item itemvalue="Python.dep_to_position" />
+        <item itemvalue="Python.plote" />
       </list>
     </recent_temporary>
   </component>
@@ -354,44 +351,103 @@
       <workItem from="1553600883920" duration="40236000" />
       <workItem from="1553835705820" duration="1230000" />
       <workItem from="1554365113710" duration="5718000" />
+      <workItem from="1557747928929" duration="21021000" />
+      <workItem from="1557840661158" duration="32439000" />
+      <workItem from="1557979906352" duration="1665000" />
+      <workItem from="1558059997348" duration="9849000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47184000" />
+    <option name="totallyTimeSpent" value="112158000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="380" y="260" width="1394" height="1102" extended-state="1" />
+    <frame x="55" y="-4" width="1865" height="1204" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.34449404" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1463807" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32959852" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32920536" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.44164333" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5453737" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.363879" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.3291815" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.7115281" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" weight="0.1463807" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32959852" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.37633452" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.363879" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.3291815" />
+      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="12" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.7115281" />
+      <window_info anchor="right" id="Database" order="4" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/plote.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py</url>
+          <line>204</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py</url>
+          <line>146</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py</url>
+          <line>154</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py</url>
+          <line>153</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -400,6 +456,74 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="xy[:2]" language="Python" />
+        <watch expression="test_out[0]" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Fetch$rgb_xy.coverage" NAME="rgb_xy Coverage Results" MODIFIED="1557913346869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+    <SUITE FILE_PATH="coverage/Fetch$draw.coverage" NAME="draw Coverage Results" MODIFIED="1557994836403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+    <SUITE FILE_PATH="coverage/Fetch$plote.coverage" NAME="plote Coverage Results" MODIFIED="1557890355570" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+    <SUITE FILE_PATH="coverage/Fetch$mnist.coverage" NAME="mnist Coverage Results" MODIFIED="1557838897266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+    <SUITE FILE_PATH="coverage/Fetch$ddpgmain.coverage" NAME="ddpgmain Coverage Results" MODIFIED="1558085809604" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+    <SUITE FILE_PATH="coverage/Fetch$dep_to_position.coverage" NAME="dep_to_position Coverage Results" MODIFIED="1557910924698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/fetch_moveit_config" />
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>test_out[0]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>xy[:2]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ground_true.squeeze(dim=0).long()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>img.squeeze(dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>loss</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>rgb[np.argwhere(rgb[:, :, 2] == 0)]=0</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>np.argwhere(rgb[:, :, 2] == 0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>np.expand_dims(rgb, axis=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>rgb.reshape(1, 224, 244, 3)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>rgb.reshape((1, 224, 244, 3))</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2/collections.pyi">
@@ -449,24 +573,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/tensor.py">
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/Env.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7938">
-          <caret line="449" selection-start-line="449" selection-end-line="449" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/functional.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24030">
-          <caret line="1351" selection-start-line="1351" selection-end-line="1351" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5616">
-          <caret line="319" selection-start-line="319" selection-end-line="319" />
+        <state relative-caret-position="4104">
+          <caret line="255" column="8" selection-start-line="255" selection-start-column="8" selection-end-line="255" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -479,18 +589,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fetch_moveit_config/DDPG.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="18" column="20" selection-start-line="18" selection-start-column="20" selection-end-line="18" selection-end-column="20" />
+        <state relative-caret-position="663">
+          <caret line="67" column="66" selection-start-line="67" selection-start-column="56" selection-end-line="67" selection-end-column="66" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/DQN.py">
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torchvision/models/resnet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1883">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-          <folding>
-            <element signature="e#46#58#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="824">
+          <caret line="149" selection-start-line="149" selection-end-line="149" />
         </state>
       </provider>
     </entry>
@@ -504,26 +611,215 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/module.py">
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/DQN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="488" selection-start-line="488" selection-end-line="488" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/Env.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="255" column="8" selection-start-line="255" selection-start-column="8" selection-end-line="255" selection-end-column="8" />
+        <state relative-caret-position="504">
+          <caret line="86" column="88" selection-start-line="86" selection-start-column="88" selection-end-line="86" selection-end-column="88" />
+          <folding>
+            <element signature="e#46#58#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fetch_moveit_config/test.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="10" selection-start-column="10" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/utils/data/dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="15" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/utils/data/dataloader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="614" selection-start-line="614" selection-end-line="614" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/autograd/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/tensor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="101" selection-start-line="101" selection-end-line="101" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-10">
+          <caret line="291" column="2" selection-start-line="291" selection-start-column="2" selection-end-line="291" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/optim/adam.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="718">
+          <caret line="92" column="57" lean-forward="true" selection-start-line="92" selection-start-column="57" selection-end-line="92" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/numpy/core/_methods.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="77" selection-start-line="77" selection-end-line="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/numpy/core/fromnumeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="3117" selection-start-line="3117" selection-end-line="3117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-1247972723/numpy/core/_multiarray_umath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="4344" column="4" selection-start-line="4344" selection-start-column="4" selection-end-line="4344" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/module.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="526">
+          <caret line="488" selection-start-line="488" selection-end-line="488" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/mnist.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1098">
+          <caret line="66" column="17" selection-start-line="66" selection-start-column="17" selection-end-line="66" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/pymodules/python2.7/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="2876" column="4" selection-start-line="2876" selection-start-column="4" selection-end-line="2876" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/pymodules/python2.7/matplotlib/image.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="428" selection-start-line="428" selection-end-line="428" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/modules/upsampling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="128" selection-start-line="128" selection-end-line="128" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/torch/nn/functional.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
-          <caret line="12" column="13" lean-forward="true" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <caret line="1331" selection-start-line="1331" selection-end-line="1331" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/plote.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="10" lean-forward="true" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/table.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/step.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/draw.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/unet_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/unet_parts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+          <folding>
+            <element signature="e#32#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/rgb_xy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1044">
+          <caret line="160" selection-start-line="160" selection-end-line="160" />
+          <folding>
+            <element signature="e#24#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/collect_img_goal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/dep_to_position.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="155" column="105" selection-start-line="155" selection-start-column="40" selection-end-line="155" selection-end-column="105" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/ddpgmain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/FakeRobot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fetch_moveit_config/SimpleDDPG.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="60" column="23" selection-start-line="60" selection-start-column="23" selection-end-line="60" selection-end-column="23" />
+          <folding>
+            <element signature="e#46#58#0" expanded="true" />
           </folding>
         </state>
       </provider>
